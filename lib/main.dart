@@ -8,17 +8,20 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
+  static const MaterialAccentColor accentcolor = Colors.purpleAccent;
   static const String _title = 'Flutter Code Sample';
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = ThemeData.dark();
+    final ThemeData theme = ThemeData(
+        brightness: Brightness.dark,
+        elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(backgroundColor: accentcolor)));
     return MaterialApp(
       title: _title,
       home: const Skeleton(),
       theme: theme.copyWith(
-        colorScheme: theme.colorScheme.copyWith(secondary: Colors.pink),
+        colorScheme: theme.colorScheme.copyWith(secondary: accentcolor),
       ),
     );
   }
