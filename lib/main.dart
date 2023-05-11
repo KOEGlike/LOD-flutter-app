@@ -14,9 +14,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = ThemeData(
-        brightness: Brightness.dark,
-        elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(backgroundColor: accentcolor)));
+      useMaterial3: true,
+      brightness: Brightness.dark,
+    );
     return MaterialApp(
       title: _title,
       home: const Skeleton(),

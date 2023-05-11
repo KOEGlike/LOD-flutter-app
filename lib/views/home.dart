@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
@@ -33,6 +32,7 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
                 width: 200,
                 child: TextField(
+                  keyboardType: TextInputType.number,
                   controller: _controller,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
