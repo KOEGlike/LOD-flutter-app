@@ -8,21 +8,24 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  static const MaterialAccentColor accentcolor = Colors.purpleAccent;
-  static const String _title = 'Flutter Code Sample';
+  static const Color accentcolor = Colors.purple;
+  static const String _title = '👍or👎';
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = ThemeData(
       useMaterial3: true,
-      brightness: Brightness.dark,
+      colorScheme: const ColorScheme.dark(
+        primary: accentcolor,
+        secondary: accentcolor,
+        onSecondary: accentcolor,
+      ),
     );
+
     return MaterialApp(
       title: _title,
       home: const Skeleton(),
-      theme: theme.copyWith(
-        colorScheme: theme.colorScheme.copyWith(secondary: accentcolor),
-      ),
+      theme: theme,
     );
   }
 }

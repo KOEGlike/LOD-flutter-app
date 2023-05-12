@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:first_test/views/vote.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,6 +13,15 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     _controller = TextEditingController();
+    _controller.addListener(() {
+      final String text = _controller.text.replaceAll(RegExp(r"\D"), "");
+      _controller.value = _controller.value.copyWith(
+        text: text,
+        selection:
+            TextSelection(baseOffset: text.length, extentOffset: text.length),
+        composing: TextRange.empty,
+      );
+    });
     super.initState();
   }
 
@@ -47,6 +56,15 @@ class _HomePageState extends State<HomePage> {
                 child: ElevatedButton(
                   onPressed: () {
                     print(_controller.text);
+                    if (_controller.text != "") {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              Vote(id: int.parse(_controller.text)),
+                        ),
+                      );
+                    }
                   },
                   child: const Text('Start'),
                 ),
