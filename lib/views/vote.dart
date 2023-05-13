@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:first_test/views/results.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,6 +13,7 @@ class Vote extends StatefulWidget {
 
 class _VoteState extends State<Vote> {
   late final Future<Map<String, dynamic>> response;
+  int currentIndex = 0;
 
   Future<Map<String, dynamic>> get(int id) async {
     var url = Uri.https('koeg.000webhostapp.com', 'sop/api.php/get',
@@ -22,7 +23,20 @@ class _VoteState extends State<Vote> {
     return jsonDecode(response.body);
   }
 
-  void vote(int id, bool isyes) {}
+  void vote(int id, bool isyes, List response) async {
+    if (currentIndex < response.length) {
+      setState(() {
+        currentIndex++;
+      });
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Results(),
+        ),
+      );
+    }
+  }
 
   @override
   void initState() {
@@ -46,33 +60,45 @@ class _VoteState extends State<Vote> {
             return Center(
               child: Column(
                 children: [
-                  Text('Success: $success'),
                   Text('Name: $name'),
-                  Container(),
-                  Image(
-                    width: 600,
-                    image: NetworkImage(
-                        'http://koeg.000webhostapp.com/sop/images/$id/${images[1]['file_Name']}'),
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      int? expecdtByts = loadingProgress.expectedTotalBytes;
-                      int? currentByts = loadingProgress.cumulativeBytesLoaded;
-                      if (expecdtByts != null) {
-                        var loadingProcent = currentByts / expecdtByts;
-                        return Center(
-                          child: SizedBox(
-                            width: 300,
-                            child:
-                                LinearProgressIndicator(value: loadingProcent),
-                          ),
-                        );
-                      } else {
-                        return child;
-                      }
-                      // You can use LinearProgressIndicator or CircularProgressIndicator instead
-                    },
+                  SizedBox.expand(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Image(
+                        image: NetworkImage(
+                            'http://koeg.000webhostapp.com/sop/images/$id/${images[currentIndex]['file_Name']}'),
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          int? expecdtByts = loadingProgress.expectedTotalBytes;
+                          int? currentByts =
+                              loadingProgress.cumulativeBytesLoaded;
+                          if (expecdtByts != null) {
+                            var loadingProcent = currentByts / expecdtByts;
+                            return Center(
+                              child: SizedBox(
+                                width: 300,
+                                child: LinearProgressIndicator(
+                                    value: loadingProcent),
+                              ),
+                            );
+                          } else {
+                            return child;
+                          }
+                          // You can use LinearProgressIndicator or CircularProgressIndicator instead
+                        },
+                      ),
+                    ),
                   ),
-                  Text(images[0]['id'].toString()),
+                  Row(
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            vote(10, true, images);
+                          },
+                          child: const Text("yes"))
+                    ],
+                  ),
+                  Text(images[currentIndex]['id'].toString()),
                 ],
               ),
             );
