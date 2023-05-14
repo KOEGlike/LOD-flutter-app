@@ -24,7 +24,7 @@ class _VoteState extends State<Vote> {
   }
 
   void vote(int id, bool isyes, List response) async {
-    if (currentIndex < response.length) {
+    if (currentIndex < response.length - 1) {
       setState(() {
         currentIndex++;
       });
@@ -52,7 +52,6 @@ class _VoteState extends State<Vote> {
         future: response,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            final success = snapshot.data!['success'];
             final images = snapshot.data!['images'];
             final name = snapshot.data!['name'];
             final id = widget.id;
@@ -61,35 +60,45 @@ class _VoteState extends State<Vote> {
               child: Column(
                 children: [
                   Text('Name: $name'),
-                  SizedBox.expand(
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Image(
-                        image: NetworkImage(
-                            'http://koeg.000webhostapp.com/sop/images/$id/${images[currentIndex]['file_Name']}'),
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          int? expecdtByts = loadingProgress.expectedTotalBytes;
-                          int? currentByts =
-                              loadingProgress.cumulativeBytesLoaded;
-                          if (expecdtByts != null) {
-                            var loadingProcent = currentByts / expecdtByts;
-                            return Center(
-                              child: SizedBox(
-                                width: 300,
-                                child: LinearProgressIndicator(
-                                    value: loadingProcent),
-                              ),
-                            );
-                          } else {
-                            return child;
-                          }
-                          // You can use LinearProgressIndicator or CircularProgressIndicator instead
-                        },
+                  FittedBox(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      padding: EdgeInsets.all(16.0),
+                      child: ClipRect(
+                        child: Image.network(
+                          'http://koeg.000webhostapp.com/sop/images/$id/${images[currentIndex]['file_Name']}',
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            int? expecdtByts =
+                                loadingProgress.expectedTotalBytes;
+                            int? currentByts =
+                                loadingProgress.cumulativeBytesLoaded;
+                            if (expecdtByts != null) {
+                              var loadingProcent = currentByts / expecdtByts;
+                              return Center(
+                                child: SizedBox(
+                                  width: 300,
+                                  child: LinearProgressIndicator(
+                                      value: loadingProcent),
+                                ),
+                              );
+                            } else {
+                              return child;
+                            }
+                          },
+                          fit: BoxFit.cover,
+                          width: MediaQuery.of(context).size.height *
+                              0.7, // set width to 90% of screen width
+                          height:
+                              null, // set height to null to allow scaling up or down
+                        ),
                       ),
                     ),
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextButton(
                           onPressed: () {
