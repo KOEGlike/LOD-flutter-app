@@ -19,7 +19,6 @@ class _VoteState extends State<Vote> {
     var url = Uri.https('koeg.000webhostapp.com', 'sop/api.php/get',
         {"id": widget.id.toString()});
     var response = await http.get(url);
-
     return jsonDecode(response.body);
   }
 
@@ -46,78 +45,101 @@ class _VoteState extends State<Vote> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: FutureBuilder<Map<String, dynamic>>(
-        future: response,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final images = snapshot.data!['images'];
-            final name = snapshot.data!['name'];
-            final id = widget.id;
+    return FutureBuilder<Map<String, dynamic>>(
+      future: response,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final images = snapshot.data!['images'];
+          final name = snapshot.data!['name'];
+          final id = widget.id;
 
-            return Center(
+          return Scaffold(
+            appBar: AppBar(title: Text(name)),
+            body: Center(
               child: Column(
                 children: [
-                  Text('Name: $name'),
-                  FittedBox(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      padding: EdgeInsets.all(16.0),
-                      child: ClipRect(
-                        child: Image.network(
-                          'http://koeg.000webhostapp.com/sop/images/$id/${images[currentIndex]['file_Name']}',
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            int? expecdtByts =
-                                loadingProgress.expectedTotalBytes;
-                            int? currentByts =
-                                loadingProgress.cumulativeBytesLoaded;
-                            if (expecdtByts != null) {
-                              var loadingProcent = currentByts / expecdtByts;
-                              return Center(
-                                child: SizedBox(
-                                  width: 300,
-                                  child: LinearProgressIndicator(
-                                      value: loadingProcent),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Image.network(
+                      'http://koeg.000webhostapp.com/sop/images/$id/${images[currentIndex]['file_Name']}',
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        int? expecdtByts = loadingProgress.expectedTotalBytes;
+                        int? currentByts =
+                            loadingProgress.cumulativeBytesLoaded;
+                        if (expecdtByts != null) {
+                          var loadingProcent = currentByts / expecdtByts;
+                          return Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height *
+                                    0.7 /
+                                    2,
+                                bottom: MediaQuery.of(context).size.height *
+                                    0.7 /
+                                    2,
+                              ),
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.7,
+                                child: LinearProgressIndicator(
+                                  value: loadingProcent,
                                 ),
-                              );
-                            } else {
-                              return child;
-                            }
-                          },
-                          fit: BoxFit.cover,
-                          width: MediaQuery.of(context).size.height *
-                              0.7, // set width to 90% of screen width
-                          height:
-                              null, // set height to null to allow scaling up or down
-                        ),
-                      ),
+                              ),
+                            ),
+                          );
+                        } else {
+                          return child;
+                        }
+                      },
+                      fit: BoxFit.cover,
+                      width: MediaQuery.of(context).size.height *
+                          0.7, // set width to 90% of screen width
+                      height:
+                          null, // set height to null to allow scaling up or down
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      TextButton(
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(
+                              right: MediaQuery.of(context).size.height *
+                                  0.7 /
+                                  2.5),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              vote(int.parse(images[currentIndex]['id']), true,
+                                  images);
+                            },
+                            child: const Text("👍"),
+                          ),
+                        ),
+                        ElevatedButton(
                           onPressed: () {
-                            vote(10, true, images);
+                            vote(int.parse(images[currentIndex]['id']), false,
+                                images);
                           },
-                          child: const Text("yes"))
-                    ],
+                          child: const Text("👎"),
+                        ),
+                      ],
+                    ),
                   ),
-                  Text(images[currentIndex]['id'].toString()),
                 ],
               ),
-            );
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+      },
     );
   }
 }

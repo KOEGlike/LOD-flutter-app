@@ -55,7 +55,6 @@ class _HomePageState extends State<HomePage> {
                 height: 55,
                 child: ElevatedButton(
                   onPressed: () {
-                    print(_controller.text);
                     if (_controller.text != "") {
                       Navigator.push(
                         context,
