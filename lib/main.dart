@@ -8,14 +8,14 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  static const Color accentcolor = Colors.purple;
+  static const Color accentcolor = Colors.blue;
   static const String _title = '👍or👎';
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = ThemeData(
       useMaterial3: true,
-      colorScheme: const ColorScheme.dark(
+      colorScheme: const ColorScheme.light(
         primary: accentcolor,
         secondary: accentcolor,
         onSecondary: accentcolor,

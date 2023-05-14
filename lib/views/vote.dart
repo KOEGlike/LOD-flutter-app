@@ -23,6 +23,13 @@ class _VoteState extends State<Vote> {
   }
 
   void vote(int id, bool isyes, List response) async {
+    const url = 'https://koeg.000webhostapp.com/sop/api.php/vote';
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    await http.post(Uri.parse(url), headers: headers, body: {
+      'isyes': isyes.toString(),
+      'id': id.toString(),
+    });
+
     if (currentIndex < response.length - 1) {
       setState(() {
         currentIndex++;
@@ -58,12 +65,15 @@ class _VoteState extends State<Vote> {
             body: Center(
               child: Column(
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Image.network(
                       'http://koeg.000webhostapp.com/sop/images/$id/${images[currentIndex]['file_Name']}',
+
+                      fit: BoxFit.cover,
+                      width: MediaQuery.of(context).size.height *
+                          0.76, // set width to 90% of screen width
+                      height: null,
                       loadingBuilder: (context, child, loadingProgress) {
                         if (loadingProgress == null) return child;
                         int? expecdtByts = loadingProgress.expectedTotalBytes;
@@ -75,10 +85,10 @@ class _VoteState extends State<Vote> {
                             child: Padding(
                               padding: EdgeInsets.only(
                                 top: MediaQuery.of(context).size.height *
-                                    0.7 /
+                                    0.5 /
                                     2,
                                 bottom: MediaQuery.of(context).size.height *
-                                    0.7 /
+                                    0.5 /
                                     2,
                               ),
                               child: SizedBox(
@@ -93,37 +103,40 @@ class _VoteState extends State<Vote> {
                           return child;
                         }
                       },
-                      fit: BoxFit.cover,
-                      width: MediaQuery.of(context).size.height *
-                          0.7, // set width to 90% of screen width
-                      height:
-                          null, // set height to null to allow scaling up or down
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
+                    padding: const EdgeInsets.only(top: 70.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(
                           padding: EdgeInsets.only(
-                              right: MediaQuery.of(context).size.height *
+                              right: MediaQuery.of(context).size.width *
                                   0.7 /
                                   2.5),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              vote(int.parse(images[currentIndex]['id']), true,
-                                  images);
-                            },
-                            child: const Text("👍"),
+                          child: SizedBox(
+                            width: 80,
+                            height: 40,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                vote(int.parse(images[currentIndex]['id']),
+                                    true, images);
+                              },
+                              child: const Text("👍"),
+                            ),
                           ),
                         ),
-                        ElevatedButton(
-                          onPressed: () {
-                            vote(int.parse(images[currentIndex]['id']), false,
-                                images);
-                          },
-                          child: const Text("👎"),
+                        SizedBox(
+                          width: 80,
+                          height: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              vote(int.parse(images[currentIndex]['id']), false,
+                                  images);
+                            },
+                            child: const Text("👎"),
+                          ),
                         ),
                       ],
                     ),
