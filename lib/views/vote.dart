@@ -16,15 +16,16 @@ class _VoteState extends State<Vote> {
   int currentIndex = 0;
 
   Future<Map<String, dynamic>> get(int id) async {
-    var url = Uri.https('koeg.000webhostapp.com', 'sop/api.php/get',
+    Uri url = Uri.https('koeg.000webhostapp.com', 'sop/api.php/get',
         {"id": widget.id.toString()});
-    var response = await http.get(url);
+    http.Response response = await http.get(url);
     return jsonDecode(response.body);
   }
 
   void vote(int id, bool isyes, List response) async {
     const url = 'https://koeg.000webhostapp.com/sop/api.php/vote';
     final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+
     await http.post(Uri.parse(url), headers: headers, body: {
       'isyes': isyes.toString(),
       'id': id.toString(),
@@ -35,12 +36,14 @@ class _VoteState extends State<Vote> {
         currentIndex++;
       });
     } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Results(),
-        ),
-      );
+      if (context.mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Results(id: widget.id),
+          ),
+        );
+      }
     }
   }
 
