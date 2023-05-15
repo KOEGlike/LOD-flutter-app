@@ -20,6 +20,12 @@ class _ResultsState extends State<Results> {
     return jsonDecode(response.body);
   }
 
+  void reload() {
+    setState(() {
+      response = get(widget.id);
+    });
+  }
+
   @override
   void initState() {
     response = get(widget.id);
@@ -34,14 +40,31 @@ class _ResultsState extends State<Results> {
         if (snapshot.hasData) {
           final images = snapshot.data!['images'];
           final name = snapshot.data!['name'];
-          final id = widget.id;
 
           return Scaffold(
-            appBar: AppBar(actions: [
-              IconButton(
-                  onPressed: () {}, icon: const Icon(Icons.refresh_rounded))
-            ]),
-          );
+              appBar: AppBar(
+                title: Text('$name results'),
+                actions: [
+                  IconButton(
+                      onPressed: () {}, icon: const Icon(Icons.refresh_rounded))
+                ],
+              ),
+              body: Center(
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  width: MediaQuery.of(context).size.width,
+                  child: ListView.builder(
+                      itemCount: images.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ImageResults(
+                          originId: int.parse(images[index]['origin_Id']),
+                          fileName: images[index]['file_Name'],
+                          score: int.parse(images[index]['votes']),
+                          votesAmount: int.parse(images[index]['votes_amount']),
+                        );
+                      }),
+                ),
+              ));
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
@@ -55,9 +78,18 @@ class _ResultsState extends State<Results> {
 }
 
 class ImageResults extends StatefulWidget {
-  final List<Map<String, dynamic>> image;
+  final int originId;
+  final String fileName;
+  final int score;
+  final int votesAmount;
 
-  const ImageResults({Key? key, required this.image}) : super(key: key);
+  const ImageResults(
+      {Key? key,
+      required this.originId,
+      required this.fileName,
+      required this.score,
+      required this.votesAmount})
+      : super(key: key);
 
   @override
   State<ImageResults> createState() => _ImageResultsState();
@@ -67,10 +99,13 @@ class _ImageResultsState extends State<ImageResults> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: const BoxDecoration(),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Image.network(
-            'http://koeg.000webhostapp.com/sop/images/${widget.image[origin_Id]}/${image['file_Name']}',
+            'http://koeg.000webhostapp.com/sop/images/${widget.originId}/${widget.fileName}',
 
             fit: BoxFit.cover,
             width: MediaQuery.of(context).size.height *
@@ -83,16 +118,10 @@ class _ImageResultsState extends State<ImageResults> {
               if (expecdtByts != null) {
                 var loadingProcent = currentByts / expecdtByts;
                 return Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.5 / 2,
-                      bottom: MediaQuery.of(context).size.height * 0.5 / 2,
-                    ),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.7,
-                      child: LinearProgressIndicator(
-                        value: loadingProcent,
-                      ),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.0001,
+                    child: LinearProgressIndicator(
+                      value: loadingProcent,
                     ),
                   ),
                 );
@@ -101,6 +130,10 @@ class _ImageResultsState extends State<ImageResults> {
               }
             },
           ),
+          Text('Score: ${widget.score}'),
+          Text('Amount of votes: ${widget.votesAmount}'),
+          Text(
+              'Percantage: ${((widget.score / widget.votesAmount + 100) / 2).toStringAsFixed(2)}'),
         ],
       ),
     );

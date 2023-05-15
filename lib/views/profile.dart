@@ -15,7 +15,7 @@ class _ProfilePageState extends State<ProfilePage> {
         IconButton(onPressed: () {}, icon: const Icon(Icons.refresh_rounded))
       ]),
       body: Center(
-        child: const Text("prof"),
+        child: const Text("Work in priogress"),
       ),
     );
   }
