@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'views/home.dart';
 import 'views/profile.dart';
+import 'views/add.dart';
 
 void main() {
   runApp(const MyApp());
@@ -47,6 +48,7 @@ class _SkeletonState extends State<Skeleton> {
 
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
+    CreatePage(),
     ProfilePage()
   ];
   @override
@@ -58,6 +60,8 @@ class _SkeletonState extends State<Skeleton> {
             icon: Icon(Icons.home),
             label: 'Home',
           ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.add_circle_outline_outlined), label: 'Create'),
           BottomNavigationBarItem(
               icon: Icon(Icons.account_circle_outlined), label: 'Account'),
         ],

@@ -40,7 +40,7 @@ class _VoteState extends State<Vote> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Results(id: widget.id),
+            builder: (context) => ResultsPage(id: widget.id),
           ),
         );
       }
