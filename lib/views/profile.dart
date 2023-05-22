@@ -14,8 +14,8 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(actions: [
         IconButton(onPressed: () {}, icon: const Icon(Icons.refresh_rounded))
       ]),
-      body: Center(
-        child: const Text("Work in priogress"),
+      body: const Center(
+        child: Text("Work in priogress"),
       ),
     );
   }

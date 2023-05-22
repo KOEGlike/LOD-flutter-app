@@ -11,9 +11,21 @@ class Vote extends StatefulWidget {
   State<Vote> createState() => _VoteState();
 }
 
-class _VoteState extends State<Vote> {
+class _VoteState extends State<Vote> with TickerProviderStateMixin {
   late final Future<Map<String, dynamic>> response;
+  late AnimationController _linearAnimationController;
+  late AnimationController _rotationAnimationController;
+  late double fullslide;
+  double _animationProcantage = 0;
   int currentIndex = 0;
+
+  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
+    begin: Offset.zero,
+    end: const Offset(1.5, 0.0),
+  ).animate(CurvedAnimation(
+    parent: _linearAnimationController,
+    curve: Curves.linear,
+  ));
 
   Future<Map<String, dynamic>> get(int id) async {
     Uri url = Uri.https('koeg.000webhostapp.com', 'sop/api.php/get',
@@ -49,8 +61,21 @@ class _VoteState extends State<Vote> {
 
   @override
   void initState() {
+    fullslide = MediaQuery.of(context).size.width / 4;
+    _linearAnimationController = AnimationController(vsync: this);
+    _rotationAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(microseconds: 500),
+    );
     response = get(widget.id);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _linearAnimationController.dispose();
+    _rotationAnimationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -70,42 +95,65 @@ class _VoteState extends State<Vote> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Image.network(
-                      'http://koeg.000webhostapp.com/sop/images/$id/${images[currentIndex]['file_Name']}',
-
-                      fit: BoxFit.cover,
-                      width: MediaQuery.of(context).size.height *
-                          0.76, // set width to 90% of screen width
-                      height: null,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        int? expecdtByts = loadingProgress.expectedTotalBytes;
-                        int? currentByts =
-                            loadingProgress.cumulativeBytesLoaded;
-                        if (expecdtByts != null) {
-                          var loadingProcent = currentByts / expecdtByts;
-                          return Center(
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                top: MediaQuery.of(context).size.height *
-                                    0.5 /
-                                    2,
-                                bottom: MediaQuery.of(context).size.height *
-                                    0.5 /
-                                    2,
-                              ),
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.7,
-                                child: LinearProgressIndicator(
-                                  value: loadingProcent,
-                                ),
-                              ),
-                            ),
-                          );
-                        } else {
-                          return child;
-                        }
+                    child: GestureDetector(
+                      onHorizontalDragStart: (details) {
+                        setState(() {
+                          _animationProcantage = 0;
+                        });
                       },
+                      onHorizontalDragUpdate: (details) {
+                        setState(() {});
+                      },
+                      onHorizontalDragEnd: (details) {},
+                      onHorizontalDragCancel: () {
+                        setState(() {
+                          _animationProcantage = 0;
+                        });
+                      },
+                      child: SlideTransition(
+                        position: _offsetAnimation,
+                        child: RotationTransition(
+                          turns: _rotationAnimationController,
+                          child: Image.network(
+                            'http://koeg.000webhostapp.com/sop/images/$id/${images[currentIndex]['file_Name']}',
+                            fit: BoxFit.cover,
+                            width: MediaQuery.of(context).size.height * 0.7,
+                            height: null,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              int? expecdtByts =
+                                  loadingProgress.expectedTotalBytes;
+                              int? currentByts =
+                                  loadingProgress.cumulativeBytesLoaded;
+                              if (expecdtByts != null) {
+                                var loadingProcent = currentByts / expecdtByts;
+                                return Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                      top: MediaQuery.of(context).size.height *
+                                          0.5 /
+                                          2,
+                                      bottom:
+                                          MediaQuery.of(context).size.height *
+                                              0.5 /
+                                              2,
+                                    ),
+                                    child: SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.7,
+                                      child: LinearProgressIndicator(
+                                        value: loadingProcent,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                return child;
+                              }
+                            },
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   Padding(
@@ -124,9 +172,9 @@ class _VoteState extends State<Vote> {
                             child: ElevatedButton(
                               onPressed: () {
                                 vote(int.parse(images[currentIndex]['id']),
-                                    true, images);
+                                    false, images);
                               },
-                              child: const Text("👍"),
+                              child: const Icon(Icons.close),
                             ),
                           ),
                         ),
@@ -135,10 +183,10 @@ class _VoteState extends State<Vote> {
                           height: 40,
                           child: ElevatedButton(
                             onPressed: () {
-                              vote(int.parse(images[currentIndex]['id']), false,
+                              vote(int.parse(images[currentIndex]['id']), true,
                                   images);
                             },
-                            child: const Text("👎"),
+                            child: const Icon(Icons.done),
                           ),
                         ),
                       ],
