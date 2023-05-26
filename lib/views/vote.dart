@@ -78,40 +78,44 @@ class _VoteState extends State<Vote> with TickerProviderStateMixin {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Image.network(
-                      'http://koeg.000webhostapp.com/sop/images/$id/${images[currentIndex]['file_Name']}',
-                      fit: BoxFit.cover,
-                      width: MediaQuery.of(context).size.height * 0.7,
-                      height: null,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        int? expecdtByts = loadingProgress.expectedTotalBytes;
-                        int? currentByts =
-                            loadingProgress.cumulativeBytesLoaded;
-                        if (expecdtByts != null) {
-                          var loadingProcent = currentByts / expecdtByts;
-                          return Center(
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                top: MediaQuery.of(context).size.height *
-                                    0.5 /
-                                    2,
-                                bottom: MediaQuery.of(context).size.height *
-                                    0.5 /
-                                    2,
-                              ),
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.7,
-                                child: LinearProgressIndicator(
-                                  value: loadingProcent,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        'http://koeg.000webhostapp.com/sop/images/$id/${images[currentIndex]['file_Name']}',
+                        fit: BoxFit.cover,
+                        width: MediaQuery.of(context).size.height * 0.7,
+                        height: null,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          int? expecdtByts = loadingProgress.expectedTotalBytes;
+                          int? currentByts =
+                              loadingProgress.cumulativeBytesLoaded;
+                          if (expecdtByts != null) {
+                            var loadingProcent = currentByts / expecdtByts;
+                            return Center(
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  top: MediaQuery.of(context).size.height *
+                                      0.5 /
+                                      2,
+                                  bottom: MediaQuery.of(context).size.height *
+                                      0.5 /
+                                      2,
+                                ),
+                                child: SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.7,
+                                  child: LinearProgressIndicator(
+                                    value: loadingProcent,
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        } else {
-                          return child;
-                        }
-                      },
+                            );
+                          } else {
+                            return child;
+                          }
+                        },
+                      ),
                     ),
                   ),
                   Padding(

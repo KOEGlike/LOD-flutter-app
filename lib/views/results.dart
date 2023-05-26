@@ -54,7 +54,9 @@ class _ResultsPageState extends State<ResultsPage> {
                   title: Text('$name results'),
                   actions: [
                     IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          reload();
+                        },
                         icon: const Icon(Icons.refresh_rounded))
                   ],
                 ),
