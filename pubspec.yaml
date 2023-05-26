@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   http: ^0.13.6
   file_selector: ^0.9.3
+  swipe_cards: ^2.0.0+1
 
 dev_dependencies:
   flutter_test:
