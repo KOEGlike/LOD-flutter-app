@@ -14,9 +14,8 @@ class Vote extends StatefulWidget {
 
 class _VoteState extends State<Vote> with TickerProviderStateMixin {
   late final Future<Map<String, dynamic>> response;
-
-  double _animationProcantage = 0;
-  int currentIndex = 0;
+  List<SwipeItem> _swipeItems = <SwipeItem>[];
+  late MatchEngine _matchEngine;
 
   Future<Map<String, dynamic>> get(int id) async {
     Uri url = Uri.https('koeg.000webhostapp.com', 'sop/api.php/get',
@@ -33,32 +32,28 @@ class _VoteState extends State<Vote> with TickerProviderStateMixin {
       'isyes': isyes.toString(),
       'id': id.toString(),
     });
+  }
 
-    if (currentIndex < response.length - 1) {
-      setState(() {
-        currentIndex++;
-      });
-    } else {
-      if (context.mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ResultsPage(id: widget.id),
-          ),
-        );
-      }
-    }
+  List<SwipeItem> swipeItemListeGenerator(int id, dynamic images) {
+    return [
+      for (int i = 0; i < images.length; i++)
+        SwipeItem(
+          likeAction: () {
+            vote(int.parse(images[i]['id']), true, images);
+            debugPrint('yes');
+          },
+          nopeAction: () {
+            vote(int.parse(images[i]['id']), false, images);
+            debugPrint('no');
+          },
+        )
+    ];
   }
 
   @override
   void initState() {
     response = get(widget.id);
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
@@ -70,53 +65,82 @@ class _VoteState extends State<Vote> with TickerProviderStateMixin {
           final images = snapshot.data!['images'];
           final name = snapshot.data!['name'];
           final id = widget.id;
+          _swipeItems = swipeItemListeGenerator(id, images);
+          _matchEngine = MatchEngine(swipeItems: _swipeItems);
 
           return Scaffold(
             appBar: AppBar(title: Text(name)),
             body: Center(
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        'http://koeg.000webhostapp.com/sop/images/$id/${images[currentIndex]['file_Name']}',
-                        fit: BoxFit.cover,
-                        width: MediaQuery.of(context).size.height * 0.7,
-                        height: null,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          int? expecdtByts = loadingProgress.expectedTotalBytes;
-                          int? currentByts =
-                              loadingProgress.cumulativeBytesLoaded;
-                          if (expecdtByts != null) {
-                            var loadingProcent = currentByts / expecdtByts;
-                            return Center(
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  top: MediaQuery.of(context).size.height *
-                                      0.5 /
-                                      2,
-                                  bottom: MediaQuery.of(context).size.height *
-                                      0.5 /
-                                      2,
-                                ),
-                                child: SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.7,
-                                  child: LinearProgressIndicator(
-                                    value: loadingProcent,
-                                  ),
-                                ),
-                              ),
-                            );
-                          } else {
-                            return child;
-                          }
+                  SizedBox(
+                    width: 500,
+                    height: 500,
+                    child: SwipeCards(
+                        upSwipeAllowed: false,
+                        fillSpace: false,
+                        matchEngine: _matchEngine,
+                        onStackFinished: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ResultsPage(id: id),
+                            ),
+                          );
                         },
-                      ),
-                    ),
+                        itemBuilder: (context, index) {
+                          return Container(
+                            color: Theme.of(context).colorScheme.background,
+                            padding: const EdgeInsets.all(8.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(
+                                'http://koeg.000webhostapp.com/sop/images/$id/${images[index]['file_Name']}',
+                                fit: BoxFit.cover,
+                                width: MediaQuery.of(context).size.height * 0.7,
+                                height: null,
+                                loadingBuilder:
+                                    (context, child, loadingProgress) {
+                                  if (loadingProgress == null) return child;
+                                  int? expecdtByts =
+                                      loadingProgress.expectedTotalBytes;
+                                  int? currentByts =
+                                      loadingProgress.cumulativeBytesLoaded;
+                                  if (expecdtByts != null) {
+                                    var loadingProcent =
+                                        currentByts / expecdtByts;
+                                    return Center(
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                            top: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.5 /
+                                                2,
+                                            bottom: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.5 /
+                                                2),
+                                        child: SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.7,
+                                          child: LinearProgressIndicator(
+                                            value: loadingProcent,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    return child;
+                                  }
+                                },
+                              ),
+                            ),
+                          );
+                        }),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 70.0),
@@ -133,8 +157,7 @@ class _VoteState extends State<Vote> with TickerProviderStateMixin {
                             height: 40,
                             child: ElevatedButton(
                               onPressed: () {
-                                vote(int.parse(images[currentIndex]['id']),
-                                    false, images);
+                                _matchEngine.currentItem?.nope();
                               },
                               child: const Icon(Icons.close),
                             ),
@@ -145,8 +168,7 @@ class _VoteState extends State<Vote> with TickerProviderStateMixin {
                           height: 40,
                           child: ElevatedButton(
                             onPressed: () {
-                              vote(int.parse(images[currentIndex]['id']), true,
-                                  images);
+                              _matchEngine.currentItem?.like();
                             },
                             child: const Icon(Icons.done),
                           ),
