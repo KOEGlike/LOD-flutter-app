@@ -39,9 +39,20 @@ class _CreatePageState extends State<CreatePage> {
                     labelText: 'Name Of LOD',
                   ),
                 )),
-            ElevatedButton(
-              onPressed: () {},
-              child: const Text('Add Photo'),
+            SizedBox(
+              width: 600,
+              child: ExpansionTile(
+                controlAffinity: ListTileControlAffinity.leading,
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text("Photos"),
+                    IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.add_circle_outline))
+                  ],
+                ),
+              ),
             )
           ],
         ),

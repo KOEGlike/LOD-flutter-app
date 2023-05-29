@@ -12,7 +12,7 @@ class Vote extends StatefulWidget {
   State<Vote> createState() => _VoteState();
 }
 
-class _VoteState extends State<Vote> with TickerProviderStateMixin {
+class _VoteState extends State<Vote> {
   late final Future<Map<String, dynamic>> response;
   List<SwipeItem> _swipeItems = <SwipeItem>[];
   late MatchEngine _matchEngine;
@@ -109,6 +109,7 @@ class _VoteState extends State<Vote> with TickerProviderStateMixin {
                                   if (expecdtByts != null) {
                                     var loadingProcent =
                                         currentByts / expecdtByts;
+                                    setState(() {});
                                     return Center(
                                       child: Padding(
                                         padding: EdgeInsets.only(
