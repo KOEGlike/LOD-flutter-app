@@ -12,7 +12,7 @@ class CreatePage extends StatefulWidget {
 class _CreatePageState extends State<CreatePage> {
   late final TextEditingController _controller;
   List<File> images = [];
-  late Future<List<File>> pickedImagesFuture;
+  late Future<List<File>> pickedImagesFuture = Future<List<File>>.value([]);
   @override
   void initState() {
     _controller = TextEditingController();
@@ -69,42 +69,6 @@ class _CreatePageState extends State<CreatePage> {
                     future: pickedImagesFuture,
                     builder: (BuildContext context,
                         AsyncSnapshot<dynamic> snapshot) {
-                      if (snapshot.hasData) {
-                        final List<File> pickedImages = snapshot.data;
-                        return ExpansionTile(
-                          controlAffinity: ListTileControlAffinity.leading,
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text("Photos"),
-                              IconButton(
-                                  onPressed: () {
-                                    pickedImagesFuture = pickImages();
-                                    images = images + pickedImages;
-                                  },
-                                  icon: const Icon(Icons.add_circle_outline))
-                            ],
-                          ),
-                          children: [
-                            SizedBox(
-                              width: 400,
-                              height: 700,
-                              child: GridView.builder(
-                                gridDelegate:
-                                    const SliverGridDelegateWithMaxCrossAxisExtent(
-                                        maxCrossAxisExtent: 200,
-                                        childAspectRatio: 3 / 2,
-                                        crossAxisSpacing: 20,
-                                        mainAxisSpacing: 20),
-                                itemBuilder: (BuildContext ctx, index) {
-                                  return Image.file(images[index]);
-                                },
-                                itemCount: images.length,
-                              ),
-                            ),
-                          ],
-                        );
-                      }
                       return ExpansionTile(
                         controlAffinity: ListTileControlAffinity.leading,
                         title: Row(
@@ -112,7 +76,18 @@ class _CreatePageState extends State<CreatePage> {
                           children: [
                             const Text("Photos"),
                             IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  if (snapshot.hasData) {
+                                    final List<File> pickedImages =
+                                        snapshot.data;
+
+                                    setState(() {
+                                      pickedImagesFuture = pickImages();
+                                      images = images + pickedImages;
+                                    });
+                                  }
+                                  setState(() {});
+                                },
                                 icon: const Icon(Icons.add_circle_outline))
                           ],
                         ),
@@ -128,6 +103,13 @@ class _CreatePageState extends State<CreatePage> {
                                       crossAxisSpacing: 20,
                                       mainAxisSpacing: 20),
                               itemBuilder: (BuildContext ctx, index) {
+                                if (snapshot.hasData) {
+                                  final List<File> pickedImages = snapshot.data;
+
+                                  var combined = images + pickedImages;
+                                  return Image.file(combined[index]);
+                                }
+
                                 return Image.file(images[index]);
                               },
                               itemCount: images.length,
