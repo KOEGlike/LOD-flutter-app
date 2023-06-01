@@ -12,6 +12,7 @@ class CreatePage extends StatefulWidget {
 class _CreatePageState extends State<CreatePage> {
   late final TextEditingController _controller;
   List<File> images = [];
+  late Future<List<File>> pickedImagesFuture;
   @override
   void initState() {
     _controller = TextEditingController();
@@ -64,27 +65,62 @@ class _CreatePageState extends State<CreatePage> {
                 padding: const EdgeInsets.only(top: 30),
                 child: SizedBox(
                   width: 400,
-                  child: ExpansionTile(
-                    controlAffinity: ListTileControlAffinity.leading,
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text("Photos"),
-                        IconButton(
-                            onPressed: () {
-                              //images = images + pickImages();
-                            },
-                            icon: const Icon(Icons.add_circle_outline))
-                      ],
-                    ),
-                    children: [
-                      SizedBox(
-                        width: 400,
-                        height: 700,
-                        child: FutureBuilder(
-                          builder: (BuildContext context,
-                              AsyncSnapshot<dynamic> snapshot) {
-                            return GridView.builder(
+                  child: FutureBuilder(
+                    future: pickedImagesFuture,
+                    builder: (BuildContext context,
+                        AsyncSnapshot<dynamic> snapshot) {
+                      if (snapshot.hasData) {
+                        final List<File> pickedImages = snapshot.data;
+                        return ExpansionTile(
+                          controlAffinity: ListTileControlAffinity.leading,
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text("Photos"),
+                              IconButton(
+                                  onPressed: () {
+                                    pickedImagesFuture = pickImages();
+                                    images = images + pickedImages;
+                                  },
+                                  icon: const Icon(Icons.add_circle_outline))
+                            ],
+                          ),
+                          children: [
+                            SizedBox(
+                              width: 400,
+                              height: 700,
+                              child: GridView.builder(
+                                gridDelegate:
+                                    const SliverGridDelegateWithMaxCrossAxisExtent(
+                                        maxCrossAxisExtent: 200,
+                                        childAspectRatio: 3 / 2,
+                                        crossAxisSpacing: 20,
+                                        mainAxisSpacing: 20),
+                                itemBuilder: (BuildContext ctx, index) {
+                                  return Image.file(images[index]);
+                                },
+                                itemCount: images.length,
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                      return ExpansionTile(
+                        controlAffinity: ListTileControlAffinity.leading,
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text("Photos"),
+                            IconButton(
+                                onPressed: () {},
+                                icon: const Icon(Icons.add_circle_outline))
+                          ],
+                        ),
+                        children: [
+                          SizedBox(
+                            width: 400,
+                            height: 700,
+                            child: GridView.builder(
                               gridDelegate:
                                   const SliverGridDelegateWithMaxCrossAxisExtent(
                                       maxCrossAxisExtent: 200,
@@ -94,11 +130,12 @@ class _CreatePageState extends State<CreatePage> {
                               itemBuilder: (BuildContext ctx, index) {
                                 return Image.file(images[index]);
                               },
-                            );
-                          },
-                        ),
-                      ),
-                    ],
+                              itemCount: images.length,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
               )
