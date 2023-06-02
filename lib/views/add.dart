@@ -11,8 +11,10 @@ class CreatePage extends StatefulWidget {
 
 class _CreatePageState extends State<CreatePage> {
   late final TextEditingController _controller;
+
   List<File> images = [];
   late Future<List<File>> pickedImagesFuture = Future<List<File>>.value([]);
+
   @override
   void initState() {
     _controller = TextEditingController();
@@ -29,8 +31,7 @@ class _CreatePageState extends State<CreatePage> {
 
     if (result != null) {
       files = result.paths.map((path) => File(path!)).toList();
-    } else {}
-
+    }
     return files;
   }
 
@@ -43,6 +44,17 @@ class _CreatePageState extends State<CreatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('Create LOD'),
+            IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.add_circle_outline_outlined))
+          ],
+        ),
+      ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
@@ -70,25 +82,26 @@ class _CreatePageState extends State<CreatePage> {
                     builder: (BuildContext context,
                         AsyncSnapshot<dynamic> snapshot) {
                       return ExpansionTile(
+                        maintainState: true,
+                        initiallyExpanded: true,
                         controlAffinity: ListTileControlAffinity.leading,
                         title: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Text("Photos"),
                             IconButton(
-                                onPressed: () {
-                                  if (snapshot.hasData) {
-                                    final List<File> pickedImages =
-                                        snapshot.data;
+                              onPressed: () async {
+                                if (snapshot.hasData) {
+                                  final List<File> pickedImages =
+                                      await pickImages();
 
-                                    setState(() {
-                                      pickedImagesFuture = pickImages();
-                                      images = images + pickedImages;
-                                    });
-                                  }
-                                  setState(() {});
-                                },
-                                icon: const Icon(Icons.add_circle_outline))
+                                  setState(() {
+                                    images = images + pickedImages;
+                                  });
+                                }
+                              },
+                              icon: const Icon(Icons.add_circle_outline),
+                            )
                           ],
                         ),
                         children: [
@@ -103,13 +116,6 @@ class _CreatePageState extends State<CreatePage> {
                                       crossAxisSpacing: 20,
                                       mainAxisSpacing: 20),
                               itemBuilder: (BuildContext ctx, index) {
-                                if (snapshot.hasData) {
-                                  final List<File> pickedImages = snapshot.data;
-
-                                  var combined = images + pickedImages;
-                                  return Image.file(combined[index]);
-                                }
-
                                 return Image.file(images[index]);
                               },
                               itemCount: images.length,
