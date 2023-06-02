@@ -128,7 +128,7 @@ class _ImageResultsState extends State<ImageResults> {
 
                 fit: BoxFit.cover,
                 width: MediaQuery.of(context).size.width *
-                    0.2, // set width to 90% of screen width
+                    0.15, // set width to 90% of screen width
                 height: null,
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) return child;

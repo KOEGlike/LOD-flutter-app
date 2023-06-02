@@ -22,6 +22,7 @@ class _HomePageState extends State<HomePage> {
         composing: TextRange.empty,
       );
     });
+
     super.initState();
   }
 
