@@ -22,7 +22,15 @@ class _HomePageState extends State<HomePage> {
         composing: TextRange.empty,
       );
     });
+    _controller.addListener(() {
+      if (_controller.text.contains('\n')) {
+        // Enter key pressed, perform desired action here
+        debugPrint('Enter key pressed');
 
+        // Clear the text field
+        _controller.clear();
+      }
+    });
     super.initState();
   }
 
@@ -30,6 +38,17 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void redirectToVote() {
+    if (_controller.text != "") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Vote(id: int.parse(_controller.text)),
+        ),
+      );
+    }
   }
 
   @override
@@ -40,15 +59,19 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-                width: 200,
-                child: TextField(
-                  keyboardType: TextInputType.number,
-                  controller: _controller,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'LOD id',
-                  ),
-                )),
+              width: 200,
+              child: TextField(
+                onSubmitted: (value) {
+                  redirectToVote();
+                },
+                keyboardType: TextInputType.number,
+                controller: _controller,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'LOD id',
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: SizedBox(
@@ -56,15 +79,7 @@ class _HomePageState extends State<HomePage> {
                 height: 55,
                 child: ElevatedButton(
                   onPressed: () {
-                    if (_controller.text != "") {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              Vote(id: int.parse(_controller.text)),
-                        ),
-                      );
-                    }
+                    redirectToVote();
                   },
                   child: const Text('Start'),
                 ),

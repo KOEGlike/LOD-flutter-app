@@ -111,11 +111,6 @@ class _ImageResultsState extends State<ImageResults> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      /*decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-      ),*/
-      //padding: const EdgeInsets.all(20),
-      // decoration: const BoxDecoration(),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -154,7 +149,7 @@ class _ImageResultsState extends State<ImageResults> {
           Text('Score:\n${widget.score}'),
           Text('Amount of votes:\n${widget.votesAmount}'),
           Text(
-              'Percantage:\n${((widget.score / widget.votesAmount + 100) / 2).toStringAsFixed(2)}'),
+              'Percantage:\n${(((widget.score / widget.votesAmount) * 100 + 100) / 2).toStringAsFixed(2)}'),
         ],
       ),
     );
