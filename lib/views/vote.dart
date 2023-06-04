@@ -34,7 +34,7 @@ class _VoteState extends State<Vote> {
     });
   }
 
-  List<SwipeItem> generateSwipeItems(int id, dynamic images) {
+  List<SwipeItem> generateSwipeItems(int id, List<dynamic> images) {
     return [
       for (int i = 0; i < images.length; i++)
         SwipeItem(
@@ -68,12 +68,12 @@ class _VoteState extends State<Vote> {
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else if (snapshot.hasData) {
-          final images = snapshot.data!['images'];
-          final name = snapshot.data!['name'];
-          final id = widget.id;
+          final List<dynamic> images = snapshot.data!['images'];
+          final String name = snapshot.data!['name'];
+          final int id = widget.id;
           _swipeItems = generateSwipeItems(id, images);
           _matchEngine = MatchEngine(swipeItems: _swipeItems);
-
+          debugPrint(jsonEncode(images));
           return Scaffold(
             appBar: AppBar(
               title: TextButton(

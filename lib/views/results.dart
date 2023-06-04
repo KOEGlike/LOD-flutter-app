@@ -46,8 +46,8 @@ class _ResultsPageState extends State<ResultsPage> {
         future: response,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            final images = snapshot.data!['images'];
-            final name = snapshot.data!['name'];
+            final List<Map<String, dynamic>> images = snapshot.data!['images'];
+            final String name = snapshot.data!['name'];
 
             return Scaffold(
                 appBar: AppBar(
