@@ -46,7 +46,7 @@ class _ResultsPageState extends State<ResultsPage> {
         future: response,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            final List<Map<String, dynamic>> images = snapshot.data!['images'];
+            final List<dynamic> images = snapshot.data!['images'];
             final String name = snapshot.data!['name'];
 
             return Scaffold(

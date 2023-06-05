@@ -86,7 +86,146 @@ class _VoteState extends State<Vote> {
             body: Center(
               child: Column(
                 children: [
-                  SizedBox(
+                  ImageSlide(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 70.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(
+                            right:
+                                MediaQuery.of(context).size.width * 0.7 / 2.5,
+                          ),
+                          child: SizedBox(
+                            width: 80,
+                            height: 40,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _matchEngine.currentItem?.nope();
+                              },
+                              child: const Icon(Icons.close),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 80,
+                          height: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _matchEngine.currentItem?.like();
+                            },
+                            child: const Icon(Icons.done),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        } else {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+      },
+    );
+  }
+}
+
+class ImageSlide extends StatefulWidget {
+  const ImageSlide({Key? key}) : super(key: key);
+
+  @override
+  State<ImageSlide> createState() => _ImageSlideState();
+}
+
+class _ImageSlideState extends State<ImageSlide>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _positionAnimation;
+  late Animation<double> _rotationAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _positionAnimation = _controller.drive(Tween<double>(begin: 0.0, end: 0.0));
+    _rotationAnimation = _controller.drive(Tween<double>(begin: 0.0, end: 0.0));
+
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    _positionAnimation =
+        Tween<double>(begin: 0.0, end: 0.0).animate(_controller)
+          ..addListener(() {
+            setState(() {});
+          });
+
+    _rotationAnimation =
+        Tween<double>(begin: 0.0, end: 0.0).animate(_controller)
+          ..addListener(() {
+            setState(() {});
+          });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onHorizontalDragUpdate: (DragUpdateDetails details) {
+        setState(() {
+          _positionAnimation = Tween<double>(
+            begin: _positionAnimation.value,
+            end: details.delta.dx / MediaQuery.of(context).size.width,
+          ).animate(_controller);
+
+          _rotationAnimation = Tween<double>(
+            begin: _rotationAnimation.value,
+            end: (_positionAnimation.value * 30.0),
+          ).animate(_controller);
+        });
+      },
+      onHorizontalDragEnd: (DragEndDetails details) {
+        _positionAnimation = Tween<double>(
+          begin: _positionAnimation.value,
+          end: 0.0,
+        ).animate(_controller);
+
+        _rotationAnimation = Tween<double>(
+          begin: _rotationAnimation.value,
+          end: 0.0,
+        ).animate(_controller);
+
+        _controller.reset();
+        _controller.forward();
+      },
+      child: Transform.translate(
+        offset: Offset(
+          (_positionAnimation.value * MediaQuery.of(context).size.width * 0.5),
+          MediaQuery.of(context).size.height / 2 - 50.0,
+        ),
+        child: Transform.rotate(
+          angle: _rotationAnimation.value * (3.14 / 180.0),
+          child: Container(
+            width: 100.0,
+            height: 100.0,
+            color: Colors.blue,
+          ),
+        ),
+      ),
+    );
+  }
+}
+/*SizedBox(
                     width: 500,
                     height: 500,
                     child: SwipeCards(
@@ -154,51 +293,4 @@ class _VoteState extends State<Vote> {
                         );
                       },
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 70.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                            right:
-                                MediaQuery.of(context).size.width * 0.7 / 2.5,
-                          ),
-                          child: SizedBox(
-                            width: 80,
-                            height: 40,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                _matchEngine.currentItem?.nope();
-                              },
-                              child: const Icon(Icons.close),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 80,
-                          height: 40,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              _matchEngine.currentItem?.like();
-                            },
-                            child: const Icon(Icons.done),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        } else {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-      },
-    );
-  }
-}
+                  ),*/
