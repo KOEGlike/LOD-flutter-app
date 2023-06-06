@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:first_test/views/results.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:swipe_cards/swipe_cards.dart';
+
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 
 class Vote extends StatefulWidget {
@@ -33,10 +33,6 @@ class _VoteState extends State<Vote> {
       'isyes': isyes.toString(),
       'id': id.toString(),
     });
-  }
-
-  List<SwipeItem> generateSwipeItems(int id, List<dynamic> images) {
-    return [for (int i = 0; i < images.length; i++) SwipeItem()];
   }
 
   @override
@@ -81,9 +77,11 @@ class _VoteState extends State<Vote> {
               child: Column(
                 children: [
                   SizedBox(
-                    width: 500,
-                    height: 500,
+                    width: MediaQuery.of(context).size.height * 0.7,
+                    height: null,
                     child: CardSwiper(
+                      allowedSwipeDirection:
+                          AllowedSwipeDirection.only(right: true, left: true),
                       cardsCount: images.length,
                       controller: _controller,
                       onSwipe: (previousIndex, currentIndex, direction) {
@@ -109,15 +107,13 @@ class _VoteState extends State<Vote> {
                       },
                       cardBuilder: (context, index) {
                         return Container(
-                          color: Colors.red,
+                          color: Theme.of(context).colorScheme.background,
                           padding: const EdgeInsets.all(8.0),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Image.network(
                               'http://koeg.000webhostapp.com/sop/images/$id/${images[index]['file_Name']}',
                               fit: BoxFit.cover,
-                              width: MediaQuery.of(context).size.height * 0.7,
-                              height: null,
                               loadingBuilder:
                                   (context, child, loadingProgress) {
                                 if (loadingProgress == null) return child;
@@ -176,7 +172,7 @@ class _VoteState extends State<Vote> {
                             height: 40,
                             child: ElevatedButton(
                               onPressed: () {
-                                //_matchEngine.currentItem?.nope();
+                                _controller.swipeLeft();
                               },
                               child: const Icon(Icons.close),
                             ),
@@ -187,7 +183,7 @@ class _VoteState extends State<Vote> {
                           height: 40,
                           child: ElevatedButton(
                             onPressed: () {
-                              // _matchEngine.currentItem?.like();
+                              _controller.swipeRight();
                             },
                             child: const Icon(Icons.done),
                           ),
