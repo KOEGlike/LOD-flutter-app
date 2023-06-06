@@ -77,10 +77,14 @@ class _VoteState extends State<Vote> {
               child: Column(
                 children: [
                   SizedBox(
-                    width: MediaQuery.of(context).size.height * 0.7,
-                    height: MediaQuery.of(context).size.width * 0.7,
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    height: MediaQuery.of(context).size.height * 0.8,
                     child: CardSwiper(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.only(
+                        top: 40,
+                        left: 40,
+                        right: 40,
+                      ),
                       allowedSwipeDirection:
                           AllowedSwipeDirection.only(right: true, left: true),
                       cardsCount: images.length,
@@ -114,8 +118,8 @@ class _VoteState extends State<Vote> {
                             child: Image.network(
                               'http://koeg.000webhostapp.com/sop/images/$id/${images[index]['file_Name']}',
                               fit: BoxFit.cover,
-                              width: MediaQuery.of(context).size.height * 0.7,
-                              height: null,
+                              //width: MediaQuery.of(context).size.height * 0.1,
+                              height: MediaQuery.of(context).size.height * 0.1,
                               loadingBuilder:
                                   (context, child, loadingProgress) {
                                 if (loadingProgress == null) return child;
