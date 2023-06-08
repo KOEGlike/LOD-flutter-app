@@ -80,6 +80,7 @@ class _VoteState extends State<Vote> {
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height * 0.6,
                     child: CardSwiper(
+                      numberOfCardsDisplayed: 1,
                       padding: const EdgeInsets.only(
                         top: 40,
                         left: 20,
@@ -111,53 +112,46 @@ class _VoteState extends State<Vote> {
                         );
                       },
                       cardBuilder: (context, index) {
-                        return Container(
-                          color: Theme.of(context).colorScheme.background,
-                          //color: Colors.red,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.network(
-                              'http://koeg.000webhostapp.com/sop/images/$id/${images[index]['file_Name']}',
-                              fit: BoxFit.contain,
-                              alignment: Alignment.topCenter,
-                              loadingBuilder:
-                                  (context, child, loadingProgress) {
-                                if (loadingProgress == null) return child;
-                                int? expectedBytes =
-                                    loadingProgress.expectedTotalBytes;
-                                int? currentBytes =
-                                    loadingProgress.cumulativeBytesLoaded;
-                                if (expectedBytes != null) {
-                                  var loadingPercent =
-                                      currentBytes / expectedBytes;
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.network(
+                            'http://koeg.000webhostapp.com/sop/images/$id/${images[index]['file_Name']}',
+                            fit: BoxFit.contain,
+                            alignment: Alignment.topCenter,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              int? expectedBytes =
+                                  loadingProgress.expectedTotalBytes;
+                              int? currentBytes =
+                                  loadingProgress.cumulativeBytesLoaded;
+                              if (expectedBytes != null) {
+                                var loadingPercent =
+                                    currentBytes / expectedBytes;
 
-                                  return Center(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(
-                                        top:
-                                            MediaQuery.of(context).size.height *
-                                                0.5 /
-                                                2,
-                                        bottom:
-                                            MediaQuery.of(context).size.height *
-                                                0.5 /
-                                                2,
-                                      ),
-                                      child: SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.7,
-                                        child: LinearProgressIndicator(
-                                          value: loadingPercent,
-                                        ),
+                                return Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                      top: MediaQuery.of(context).size.height *
+                                          0.5 /
+                                          2,
+                                      bottom:
+                                          MediaQuery.of(context).size.height *
+                                              0.5 /
+                                              2,
+                                    ),
+                                    child: SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.7,
+                                      child: LinearProgressIndicator(
+                                        value: loadingPercent,
                                       ),
                                     ),
-                                  );
-                                } else {
-                                  return child;
-                                }
-                              },
-                            ),
+                                  ),
+                                );
+                              } else {
+                                return child;
+                              }
+                            },
                           ),
                         );
                       },
