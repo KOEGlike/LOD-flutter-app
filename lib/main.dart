@@ -2,6 +2,18 @@ import 'package:flutter/material.dart';
 import 'views/home.dart';
 import 'views/profile.dart';
 import 'views/add.dart';
+import 'package:go_router/go_router.dart';
+
+//https://stackoverflow.com/questions/71011598/how-to-work-with-navigationbar-in-go-router-flutter
+
+final _router = GoRouter(
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const Skeleton(),
+    ),
+  ],
+);
 
 void main() {
   runApp(const MyApp());
@@ -24,9 +36,9 @@ class MyApp extends StatelessWidget {
       ),
     );
 
-    return MaterialApp(
+    return MaterialApp.router(
       title: _title,
-      home: const Skeleton(),
+      routerConfig: _router,
       theme: theme,
     );
   }
