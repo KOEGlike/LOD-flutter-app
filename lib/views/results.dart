@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
 class ResultsPage extends StatefulWidget {
@@ -34,57 +35,58 @@ class _ResultsPageState extends State<ResultsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        // Navigate back to the HomeScreen
-        Navigator.popUntil(context, ModalRoute.withName('/'));
+    return FutureBuilder<Map<String, dynamic>>(
+      future: response,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final List<dynamic> images = snapshot.data!['images'];
+          final String name = snapshot.data!['name'];
 
-        // Prevent immediate back navigation
-        return false;
-      },
-      child: FutureBuilder<Map<String, dynamic>>(
-        future: response,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final List<dynamic> images = snapshot.data!['images'];
-            final String name = snapshot.data!['name'];
-
-            return Scaffold(
-                appBar: AppBar(
-                  title: Text('$name results'),
-                  actions: [
-                    IconButton(
-                        onPressed: () {
-                          reload();
-                        },
-                        icon: const Icon(Icons.refresh_rounded))
-                  ],
-                ),
-                body: Center(
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    child: ListView.builder(
-                        itemCount: images.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return ImageResults(
-                            originId: int.parse(images[index]['origin_Id']),
-                            fileName: images[index]['file_Name'],
-                            score: int.parse(images[index]['votes']),
-                            votesAmount:
-                                int.parse(images[index]['votes_amount']),
-                          );
-                        }),
+          return Scaffold(
+              appBar: AppBar(
+                title: Row(children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: IconButton(
+                      onPressed: () {
+                        context.go("/home");
+                      },
+                      icon: const Icon(Icons.arrow_back_sharp),
+                    ),
                   ),
-                ));
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
-          }
-        },
-      ),
+                  Text('$name results')
+                ]),
+                actions: [
+                  IconButton(
+                      onPressed: () {
+                        reload();
+                      },
+                      icon: const Icon(Icons.refresh_rounded))
+                ],
+              ),
+              body: Center(
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  child: ListView.builder(
+                      itemCount: images.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ImageResults(
+                          originId: int.parse(images[index]['origin_Id']),
+                          fileName: images[index]['file_Name'],
+                          score: int.parse(images[index]['votes']),
+                          votesAmount: int.parse(images[index]['votes_amount']),
+                        );
+                      }),
+                ),
+              ));
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+      },
     );
   }
 }

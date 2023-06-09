@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:first_test/views/results.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
@@ -66,12 +67,7 @@ class _VoteState extends State<Vote> {
           debugPrint(jsonEncode(images));
           return Scaffold(
             appBar: AppBar(
-              title: TextButton(
-                onPressed: () {
-                  setState(() {});
-                },
-                child: Text(name),
-              ),
+              title: Text(name),
             ),
             body: Center(
               child: Column(
@@ -104,12 +100,7 @@ class _VoteState extends State<Vote> {
                         return true;
                       },
                       onEnd: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ResultsPage(id: id),
-                          ),
-                        );
+                        context.go('/results?id=$id');
                       },
                       cardBuilder: (context, index) {
                         return ClipRRect(
@@ -140,8 +131,7 @@ class _VoteState extends State<Vote> {
                                               2,
                                     ),
                                     child: SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.7,
+                                      width: 150,
                                       child: LinearProgressIndicator(
                                         value: loadingPercent,
                                       ),

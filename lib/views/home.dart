@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:first_test/views/vote.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -42,12 +42,7 @@ class _HomePageState extends State<HomePage> {
 
   void redirectToVote() {
     if (_controller.text != "") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Vote(id: int.parse(_controller.text)),
-        ),
-      );
+      context.go('/vote?id=${int.parse(_controller.text)}');
     }
   }
 

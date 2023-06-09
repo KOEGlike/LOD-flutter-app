@@ -44,17 +44,6 @@ class _CreatePageState extends State<CreatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text('Create LOD'),
-            IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.add_circle_outline_outlined))
-          ],
-        ),
-      ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
