@@ -5,6 +5,7 @@ import 'views/home.dart';
 import 'views/account.dart';
 import 'views/create.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter/foundation.dart';
 
 //https://stackoverflow.com/questions/71011598/how-to-work-with-navigationbar-in-go-router-flutter
 
@@ -156,13 +157,29 @@ class _SkeletonState extends State<Skeleton> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        items: navBarItems,
-        currentIndex: _calculateSelectedIndex(context),
-        onTap: onTap,
-      ),
-      body: widget.child,
-    );
+    if (defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS) {
+      return Scaffold(
+        bottomNavigationBar: BottomNavigationBar(
+          items: navBarItems,
+          currentIndex: _calculateSelectedIndex(context),
+          onTap: onTap,
+        ),
+        body: widget.child,
+      );
+    } else {
+      return Scaffold(
+        body: Center(
+            child: Column(
+          children: [
+            Container(
+              child: Row(
+                children: [],
+              ),
+            ),
+          ],
+        )),
+      );
+    }
   }
 }
