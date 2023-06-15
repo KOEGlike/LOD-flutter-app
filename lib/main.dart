@@ -1,6 +1,7 @@
 import 'package:first_test/views/results.dart';
 import 'package:first_test/views/vote.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'views/home.dart';
 import 'views/account.dart';
 import 'views/create.dart';
@@ -78,6 +79,18 @@ void main() {
   runApp(const MyApp());
 }
 
+class NavIcon {
+  final Icon icon;
+  final String route;
+  final String label;
+  NavIcon({
+    Key? key,
+    required this.icon,
+    required this.route,
+    required this.label,
+  });
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   static const Color accentcolor = Colors.blue;
@@ -112,16 +125,34 @@ class Skeleton extends StatefulWidget {
 }
 
 class _SkeletonState extends State<Skeleton> {
+  final List<NavIcon> navBarItems = <NavIcon>[
+    NavIcon(
+      icon: const Icon(Icons.home),
+      label: 'Home',
+      route: '/home',
+    ),
+    NavIcon(
+      icon: const Icon(Icons.add_circle_outline_outlined),
+      label: 'Create',
+      route: '/create',
+    ),
+    NavIcon(
+      icon: const Icon(Icons.account_circle_outlined),
+      label: 'Account',
+      route: '/account',
+    ),
+  ];
+
   int _calculateSelectedIndex(BuildContext context) {
     final GoRouter route = GoRouter.of(context);
     final String location = route.location;
-    if (location.startsWith('/home')) {
+    if (location.startsWith(navBarItems[0].route)) {
       return 0;
     }
-    if (location.startsWith('/create')) {
+    if (location.startsWith(navBarItems[1].route)) {
       return 1;
     }
-    if (location.startsWith('/account')) {
+    if (location.startsWith(navBarItems[2].route)) {
       return 2;
     }
     return 0;
@@ -130,30 +161,15 @@ class _SkeletonState extends State<Skeleton> {
   void onTap(int value) {
     switch (value) {
       case 0:
-        return context.go('/home');
+        return context.go(navBarItems[0].route);
       case 1:
-        return context.go('/create');
+        return context.go(navBarItems[1].route);
       case 2:
-        return context.go('/account');
+        return context.go(navBarItems[2].route);
       default:
-        return context.go('/home');
+        return context.go(navBarItems[0].route);
     }
   }
-
-  final List<BottomNavigationBarItem> navBarItems = <BottomNavigationBarItem>[
-    const BottomNavigationBarItem(
-      icon: Icon(Icons.home),
-      label: 'Home',
-    ),
-    const BottomNavigationBarItem(
-      icon: Icon(Icons.add_circle_outline_outlined),
-      label: 'Create',
-    ),
-    const BottomNavigationBarItem(
-      icon: Icon(Icons.account_circle_outlined),
-      label: 'Account',
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +177,13 @@ class _SkeletonState extends State<Skeleton> {
         defaultTargetPlatform == TargetPlatform.iOS) {
       return Scaffold(
         bottomNavigationBar: BottomNavigationBar(
-          items: navBarItems,
+          items: [
+            for (int i = 0; i < navBarItems.length; i++)
+              BottomNavigationBarItem(
+                icon: navBarItems[i].icon,
+                label: navBarItems[i].label,
+              )
+          ],
           currentIndex: _calculateSelectedIndex(context),
           onTap: onTap,
         ),
@@ -169,16 +191,44 @@ class _SkeletonState extends State<Skeleton> {
       );
     } else {
       return Scaffold(
-        body: Center(
-            child: Column(
-          children: [
-            Container(
-              child: Row(
-                children: [],
-              ),
-            ),
-          ],
-        )),
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          toolbarHeight: 100,
+          surfaceTintColor: Colors.transparent,
+          foregroundColor: Colors.transparent,
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                //padding: const EdgeInsets.only(bottom: 10),
+                width: 400,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.amber,
+                  borderRadius: BorderRadius.circular(
+                    20,
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    for (int i = 0; i < navBarItems.length; i++)
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          context.go(navBarItems[i].route);
+                        },
+                        icon: navBarItems[i].icon,
+                        label: Text(navBarItems[i].label),
+                      )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+        body: Center(child: widget.child),
       );
     }
   }
