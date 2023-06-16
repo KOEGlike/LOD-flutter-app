@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html>
+  
 <head>
+  <style>body{
+    background-color: #3d5e58;
+  }
+  #img{
+    box-shadow: 10px, 10px, 5px, black ;
+    margin-left: 25%;
+    margin-right: auto;
+    width: 50%;
+
+  }</style>
   <!--
     If you are serving your web app in a path other than the root, change the
     href value below to reflect the base path you are serving from.
@@ -27,7 +38,7 @@
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="android-chrome-512x512.png"/>
 
   <title>first_test</title>
   <link rel="manifest" href="manifest.json">
@@ -37,23 +48,25 @@
     var serviceWorkerVersion = null;
   </script>
   <!-- This script adds the flutter initialization JS code -->
-  <script src="flutter.js" defer></script>
+  <script  src="flutter.js" defer></script>
 </head>
 <body>
+  <img src="android-chrome-512x512.png" id="img"alt="logo of website">
   <script>
-    window.addEventListener('load', function(ev) {
-      // Download main.dart.js
-      _flutter.loader.loadEntrypoint({
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
-        },
-        onEntrypointLoaded: function(engineInitializer) {
-          engineInitializer.initializeEngine().then(function(appRunner) {
-            appRunner.runApp();
-          });
-        }
+    window.addEventListener('load', function (ev) {
+        // Download main.dart.js
+        _flutter.loader.loadEntrypoint({
+          serviceWorker: {
+            serviceWorkerVersion: serviceWorkerVersion,
+          },
+          onEntrypointLoaded: async function(engineInitializer) {
+            // Initialize the Flutter engine
+            let appRunner = await engineInitializer.initializeEngine();
+            // Run the app
+            await appRunner.runApp();
+          }
+        });
       });
-    });
   </script>
 </body>
 </html>
