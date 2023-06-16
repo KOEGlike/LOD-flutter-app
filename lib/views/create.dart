@@ -50,7 +50,7 @@ class _CreatePageState extends State<CreatePage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 40),
+                padding: const EdgeInsets.only(top: 150),
                 child: SizedBox(
                     width: 200,
                     child: TextField(

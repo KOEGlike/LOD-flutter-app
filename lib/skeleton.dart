@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'dart:math' as math;
 
 class NavIcon {
   final Icon icon;
@@ -103,7 +102,10 @@ Scaffold mobile(BuildContext context, Widget child) {
 Scaffold desktop(BuildContext context, Widget child) {
   return Scaffold(
     extendBodyBehindAppBar: true,
-    appBar: FloatingAppBar(),
+    appBar: PreferredSize(
+      preferredSize: const Size.fromHeight(100),
+      child: FloatingAppBar(),
+    ),
     body: Center(child: child),
   );
 }
@@ -117,47 +119,111 @@ class FloatingAppBar extends AppBar {
 }
 
 class _FloatingAppBarState extends State<FloatingAppBar> {
-  int currentIndex = 0;
+  late int currentIndex;
+  Color base(BuildContext context) {
+    return Theme.of(context).colorScheme.onBackground;
+  }
+
+  Color hover(BuildContext context) {
+    return Theme.of(context).colorScheme.secondary;
+  }
+
+  Color current(BuildContext context) {
+    return Theme.of(context).colorScheme.primary;
+  }
+
+  late List<Color> _colors;
+
+  @override
+  void didChangeDependencies() {
+    _colors = [for (int i = 0; i < navBarItems.length; i++) base(context)];
+    currentIndex = _calculateSelectedIndex(context);
+    _colors[currentIndex] = current(context);
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      toolbarHeight: 100,
+      toolbarHeight: 800,
       surfaceTintColor: Colors.transparent,
       foregroundColor: Colors.transparent,
       elevation: 0,
       backgroundColor: Colors.transparent,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: widget.appBarWidth,
-            height: 50,
-            decoration: BoxDecoration(
-              color: Colors.amber,
-              borderRadius: BorderRadius.circular(
-                20,
+      title: SizedBox(
+        height: 300,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Container(
+                width: widget.appBarWidth,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  borderRadius: BorderRadius.circular(
+                    20,
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    for (int i = 0; i < navBarItems.length; i++)
+                      SizedBox(
+                          height: 45,
+                          width:
+                              widget.appBarWidth / (navBarItems.length + 0.1),
+                          child: ElevatedButton.icon(
+                            onHover: (bool isHovering) {
+                              setState(() {
+                                if (isHovering) {
+                                  _colors[i] = hover(context);
+                                } else if (_calculateSelectedIndex(context) ==
+                                    i) {
+                                  _colors[i] = current(context);
+                                } else {
+                                  _colors[i] = base(context);
+                                }
+                              });
+                            },
+                            onPressed: () {
+                              context.go(navBarItems[i].route);
+                              setState(() {
+                                currentIndex - _calculateSelectedIndex(context);
+                              });
+                            },
+                            icon: navBarItems[i].icon,
+                            label: Text(
+                              navBarItems[i].label,
+                              style: TextStyle(
+                                color: _colors[i],
+                              ),
+                            ),
+                            style: ButtonStyle(
+                              iconColor: MaterialStateProperty.all(_colors[i]),
+                              backgroundColor:
+                                  MaterialStateProperty.all(Colors.transparent),
+                              shadowColor:
+                                  MaterialStateProperty.all(Colors.transparent),
+                              surfaceTintColor:
+                                  MaterialStateProperty.all(Colors.transparent),
+                              overlayColor:
+                                  MaterialStateProperty.all(Colors.transparent),
+                              shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(1),
+                                    side: const BorderSide(
+                                        color: Colors.transparent)),
+                              ),
+                            ),
+                          ))
+                  ],
+                ),
               ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                for (int i = 0; i < navBarItems.length; i++)
-                  ButtonTheme(
-                    minWidth: widget.appBarWidth / navBarItems.length,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        context.go(navBarItems[i].route);
-                      },
-                      icon: navBarItems[i].icon,
-                      label: Text(navBarItems[i].label),
-                      style: ButtonStyle(),
-                    ),
-                  )
-              ],
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
