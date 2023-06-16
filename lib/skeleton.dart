@@ -69,10 +69,19 @@ class Skeleton extends StatefulWidget {
 }
 
 class _SkeletonState extends State<Skeleton> {
+  late final bool isWebMobile;
+
+  @override
+  void didChangeDependencies() {
+    isWebMobile = kIsWeb && (MediaQuery.of(context).size.width < 700);
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (defaultTargetPlatform == TargetPlatform.android ||
-        defaultTargetPlatform == TargetPlatform.iOS) {
+        defaultTargetPlatform == TargetPlatform.iOS ||
+        isWebMobile) {
       return mobile(context, widget.child);
     } else {
       return desktop(context, widget.child);
