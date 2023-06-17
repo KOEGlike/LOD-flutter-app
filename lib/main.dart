@@ -3,7 +3,8 @@ import 'package:first_test/views/vote.dart';
 import 'package:flutter/material.dart';
 import 'views/home.dart';
 import 'views/account.dart';
-import 'views/create.dart';
+import 'views/create/select.dart';
+import 'views/create/links.dart';
 import 'package:go_router/go_router.dart';
 import 'skeleton.dart';
 
@@ -71,6 +72,16 @@ final _router = GoRouter(
                 id: int.parse(state.queryParameters['filter'] ?? "113")));
       },
     ),
+    GoRoute(
+      path: '/create/links',
+      pageBuilder: (context, state) {
+        return NoTransitionPage(
+            key: UniqueKey(),
+            child: Links(
+                //id: int.parse(state.queryParameters['filter'] ?? "113")
+                ));
+      },
+    ),
   ],
 );
 
@@ -80,18 +91,18 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  static const Color accentcolor = Colors.blue;
-  static const String _title = '👍or👎';
+  final Color primaryColor = const Color.fromARGB(255, 145, 206, 255);
+  final Color accentColor = const Color.fromARGB(255, 255, 231, 152);
+  final String _title = '👍or👎';
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = ThemeData(
       useMaterial3: true,
-      dividerColor: Colors.transparent,
-      colorScheme: const ColorScheme.dark(
-        primary: accentcolor,
-        secondary: accentcolor,
-        onSecondary: accentcolor,
+      colorScheme: ColorScheme.dark(
+        primary: primaryColor,
+        secondary: accentColor,
+        // onSecondary: accentcolor,
       ),
     );
 

@@ -137,7 +137,7 @@ class _FloatingAppBarState extends State<FloatingAppBar> {
   }
 
   Color current(BuildContext context) {
-    return Theme.of(context).colorScheme.primary;
+    return Theme.of(context).colorScheme.primaryContainer;
   }
 
   late List<Color> _colors;
@@ -169,11 +169,21 @@ class _FloatingAppBarState extends State<FloatingAppBar> {
                 width: widget.appBarWidth,
                 height: 50,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                  borderRadius: BorderRadius.circular(
-                    20,
-                  ),
-                ),
+                    color: Theme.of(context).colorScheme.surface,
+                    borderRadius: BorderRadius.circular(
+                      20,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.05),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: const Offset(0, 0),
+                      )
+                    ]),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
