@@ -110,20 +110,20 @@ Scaffold mobile(BuildContext context, Widget child) {
 Scaffold desktop(BuildContext context, Widget child) {
   return Scaffold(
     extendBodyBehindAppBar: true,
-    appBar: PreferredSize(
-      preferredSize: const Size.fromHeight(100),
-      child: FloatingAppBar(),
-    ),
+    appBar: const FloatingAppBar(),
     body: Center(child: child),
   );
 }
 
-class FloatingAppBar extends AppBar {
-  FloatingAppBar({super.key});
+class FloatingAppBar extends StatefulWidget implements PreferredSizeWidget {
+  const FloatingAppBar({super.key});
   final double appBarWidth = 400;
 
   @override
   State<FloatingAppBar> createState() => _FloatingAppBarState();
+
+  @override
+  Size get preferredSize => const Size.fromHeight(100);
 }
 
 class _FloatingAppBarState extends State<FloatingAppBar> {
@@ -178,7 +178,10 @@ class _FloatingAppBarState extends State<FloatingAppBar> {
                         color: Theme.of(context)
                             .colorScheme
                             .primary
-                            .withOpacity(0.05),
+                            .withOpacity(
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? 0.05
+                                    : 0.7),
                         spreadRadius: 5,
                         blurRadius: 7,
                         offset: const Offset(0, 0),
