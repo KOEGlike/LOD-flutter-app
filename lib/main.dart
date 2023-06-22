@@ -77,9 +77,8 @@ final _router = GoRouter(
       pageBuilder: (context, state) {
         return NoTransitionPage(
             key: UniqueKey(),
-            child: Links(
-                //id: int.parse(state.queryParameters['filter'] ?? "113")
-                ));
+            child:
+                Links(id: int.parse(state.queryParameters['filter'] ?? "113")));
       },
     ),
   ],
@@ -99,7 +98,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = ThemeData(
       useMaterial3: true,
-      colorScheme: ColorScheme.light(
+      colorScheme: ColorScheme.dark(
         primary: primaryColor,
         secondary: accentColor,
         // onSecondary: accentcolor,

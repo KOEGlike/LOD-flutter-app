@@ -1,7 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
+import 'package:first_test/api.dart';
 
 class ResultsPage extends StatefulWidget {
   final int id;
@@ -13,13 +12,6 @@ class ResultsPage extends StatefulWidget {
 
 class _ResultsPageState extends State<ResultsPage> {
   late Future<Map<String, dynamic>> response;
-
-  Future<Map<String, dynamic>> get(int id) async {
-    Uri url = Uri.https('koeg.000webhostapp.com', 'sop/api.php/get',
-        {"id": widget.id.toString()});
-    http.Response response = await http.get(url);
-    return jsonDecode(response.body);
-  }
 
   void reload() {
     setState(() {
@@ -44,18 +36,13 @@ class _ResultsPageState extends State<ResultsPage> {
 
           return Scaffold(
               appBar: AppBar(
-                title: Row(children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: IconButton(
-                      onPressed: () {
-                        context.go("/home");
-                      },
-                      icon: const Icon(Icons.arrow_back_sharp),
-                    ),
-                  ),
-                  Text('$name results')
-                ]),
+                title: Text('$name results'),
+                leading: IconButton(
+                  onPressed: () {
+                    context.go("/home");
+                  },
+                  icon: const Icon(Icons.arrow_back_sharp),
+                ),
                 actions: [
                   IconButton(
                       onPressed: () {

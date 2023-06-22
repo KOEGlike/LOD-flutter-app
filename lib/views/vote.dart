@@ -1,7 +1,6 @@
-import 'dart:convert';
+import 'package:first_test/api.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 
@@ -18,26 +17,9 @@ class _VoteState extends State<Vote> {
 
   final CardSwiperController _controller = CardSwiperController();
 
-  Future<Map<String, dynamic>> fetchImages(int id) async {
-    Uri url = Uri.https('koeg.000webhostapp.com', 'sop/api.php/get',
-        {"id": widget.id.toString()});
-    http.Response response = await http.get(url);
-    return jsonDecode(response.body);
-  }
-
-  void vote(int id, bool isyes, List response) async {
-    const url = 'https://koeg.000webhostapp.com/sop/api.php/vote';
-    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
-
-    await http.post(Uri.parse(url), headers: headers, body: {
-      'isyes': isyes.toString(),
-      'id': id.toString(),
-    });
-  }
-
   @override
   void didChangeDependencies() {
-    response = fetchImages(widget.id);
+    response = get(widget.id);
     super.didChangeDependencies();
   }
 
@@ -63,7 +45,6 @@ class _VoteState extends State<Vote> {
           final String name = snapshot.data!['name'];
           final int id = widget.id;
 
-          debugPrint(jsonEncode(images));
           return Scaffold(
             appBar: AppBar(
               title: Text(name),

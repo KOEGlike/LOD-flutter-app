@@ -1,6 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:first_test/api.dart';
+import 'package:go_router/go_router.dart';
+import 'dart:typed_data';
 
 class CreatePage extends StatefulWidget {
   const CreatePage({super.key});
@@ -26,11 +29,15 @@ class _CreatePageState extends State<CreatePage> {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: FileType.custom,
-      allowedExtensions: ['jpg', 'pdf', 'doc'],
+      allowedExtensions: ['jpg', 'png', 'gif', 'webp', 'jpeg'],
     );
 
     if (result != null) {
-      files = result.paths.map((path) => File(path!)).toList();
+      files = [
+        for (int i = 0; i < result.files.length; i++)
+          await File(result.names[i]!)
+              .writeAsBytes(result.files[i].bytes?.toList() ?? [0])
+      ];
     }
     return files;
   }
@@ -44,6 +51,20 @@ class _CreatePageState extends State<CreatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          int id = await create(_controller.text);
+          upload(images, id);
+          if (context.mounted) {
+            context.go("create/links?=$id");
+          }
+        },
+        child: Icon(
+          Icons.publish_rounded,
+          color: Theme.of(context).colorScheme.onSecondary,
+          size: 30,
+        ),
+      ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
