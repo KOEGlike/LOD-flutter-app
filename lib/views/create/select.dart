@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:first_test/api.dart';
 import 'package:go_router/go_router.dart';
-import 'dart:typed_data';
 
 class CreatePage extends StatefulWidget {
   const CreatePage({super.key});
@@ -33,11 +32,7 @@ class _CreatePageState extends State<CreatePage> {
     );
 
     if (result != null) {
-      files = [
-        for (int i = 0; i < result.files.length; i++)
-          await File(result.names[i]!)
-              .writeAsBytes(result.files[i].bytes?.toList() ?? [0])
-      ];
+      files = result.paths.map((path) => File(path!)).toList();
     }
     return files;
   }
