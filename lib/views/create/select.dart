@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:first_test/api.dart';
@@ -14,7 +15,7 @@ class CreatePage extends StatefulWidget {
 class _CreatePageState extends State<CreatePage> {
   late final TextEditingController _controller;
 
-  List<File> images = [];
+  List<Image> images = [];
   late Future<List<File>> pickedImagesFuture = Future<List<File>>.value([]);
 
   @override
@@ -23,8 +24,8 @@ class _CreatePageState extends State<CreatePage> {
     super.initState();
   }
 
-  Future<List<File>> pickImages() async {
-    List<File> files = [];
+  Future<List<Image>> pickImages() async {
+    List<Image> files = [];
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: FileType.custom,
@@ -32,7 +33,9 @@ class _CreatePageState extends State<CreatePage> {
     );
 
     if (result != null) {
-      files = result.paths.map((path) => File(path!)).toList();
+      files = result.files.map((path) {
+        return Image.memory(path.bytes ?? Uint8List(1));
+      }).toList();
     }
     return files;
   }
@@ -49,7 +52,7 @@ class _CreatePageState extends State<CreatePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           int id = await create(_controller.text);
-          upload(images, id);
+          //upload(images, id);
           if (context.mounted) {
             context.go("create/links?=$id");
           }
@@ -107,7 +110,7 @@ class _CreatePageState extends State<CreatePage> {
                               IconButton(
                                 onPressed: () async {
                                   if (snapshot.hasData) {
-                                    final List<File> pickedImages =
+                                    final List<Image> pickedImages =
                                         await pickImages();
 
                                     setState(() {
@@ -131,7 +134,7 @@ class _CreatePageState extends State<CreatePage> {
                                         crossAxisSpacing: 20,
                                         mainAxisSpacing: 20),
                                 itemBuilder: (BuildContext ctx, index) {
-                                  return Image.file(images[index]);
+                                  return images[index];
                                 },
                                 itemCount: images.length,
                               ),
