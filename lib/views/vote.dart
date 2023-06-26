@@ -1,11 +1,11 @@
 import 'package:first_test/api.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
+import 'error.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 
 class Vote extends StatefulWidget {
-  final int id;
+  final int? id;
   const Vote({Key? key, required this.id}) : super(key: key);
 
   @override
@@ -13,7 +13,7 @@ class Vote extends StatefulWidget {
 }
 
 class _VoteState extends State<Vote> {
-  late Future<Map<String, dynamic>> response;
+  late Future<Map<String, dynamic>?> response;
 
   final CardSwiperController _controller = CardSwiperController();
 
@@ -31,9 +31,12 @@ class _VoteState extends State<Vote> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>>(
+    return FutureBuilder<Map<String, dynamic>?>(
       future: response,
       builder: (context, snapshot) {
+        if (widget.id == null) {
+          return const Errores("not_exist");
+        }
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
@@ -42,8 +45,12 @@ class _VoteState extends State<Vote> {
           return Text('Error: ${snapshot.error}');
         } else if (snapshot.hasData) {
           final List<dynamic> images = snapshot.data!['images'];
+          if (snapshot.data!['name'] == null) {
+            return const Errores("not_exist");
+          }
           final String name = snapshot.data!['name'];
-          final int id = widget.id;
+
+          final int? id = widget.id;
 
           return Scaffold(
             appBar: AppBar(

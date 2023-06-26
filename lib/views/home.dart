@@ -42,7 +42,9 @@ class _HomePageState extends State<HomePage> {
 
   void redirectToVote() {
     if (_controller.text != "") {
-      context.go('/vote?id=${int.parse(_controller.text)}');
+      context.go(
+        '/vote?id=${_controller.text}',
+      );
     }
   }
 

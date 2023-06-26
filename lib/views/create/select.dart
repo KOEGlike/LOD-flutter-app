@@ -5,6 +5,13 @@ import 'package:file_picker/file_picker.dart';
 import 'package:first_test/api.dart';
 import 'package:go_router/go_router.dart';
 
+class PickedImages {
+  final Uint8List binary;
+  final String extension;
+
+  const PickedImages(this.binary, this.extension);
+}
+
 class CreatePage extends StatefulWidget {
   const CreatePage({super.key});
 
@@ -15,7 +22,7 @@ class CreatePage extends StatefulWidget {
 class _CreatePageState extends State<CreatePage> {
   late final TextEditingController _controller;
 
-  List<Uint8List> images = [];
+  List<PickedImages> images = [];
   late Future<List<File>> pickedUint8ListsFuture = Future<List<File>>.value([]);
 
   @override
@@ -24,8 +31,8 @@ class _CreatePageState extends State<CreatePage> {
     super.initState();
   }
 
-  Future<List<Uint8List>> pickUint8Lists() async {
-    List<Uint8List> files = [];
+  Future<List<PickedImages>> pickUint8Lists() async {
+    List<PickedImages> files = [];
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: FileType.custom,
@@ -35,7 +42,8 @@ class _CreatePageState extends State<CreatePage> {
     if (result != null) {
       files = [
         for (int i = 0; i < result.files.length; i++)
-          result.files[i].bytes ?? Uint8List(0)
+          PickedImages(result.files[i].bytes ?? Uint8List(0),
+              result.files[i].extension ?? ".png")
       ];
     }
     return files;
@@ -52,12 +60,13 @@ class _CreatePageState extends State<CreatePage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          int id = await create(_controller.text);
-          debugPrint(id.toString());
-          debugPrint(id.toString());
-          upload(images, id);
-          if (context.mounted) {
-            context.go("create/links?=$id");
+          if (_controller.text != "") {
+            int id = await create(_controller.text);
+
+            await upload(images, id, _controller.text);
+            if (context.mounted) {
+              context.go("/create/links?id=$id");
+            }
           }
         },
         child: Icon(
@@ -113,7 +122,7 @@ class _CreatePageState extends State<CreatePage> {
                               IconButton(
                                 onPressed: () async {
                                   if (snapshot.hasData) {
-                                    final List<Uint8List> pickedUint8Lists =
+                                    final List<PickedImages> pickedUint8Lists =
                                         await pickUint8Lists();
 
                                     setState(() {
@@ -137,7 +146,7 @@ class _CreatePageState extends State<CreatePage> {
                                         crossAxisSpacing: 20,
                                         mainAxisSpacing: 20),
                                 itemBuilder: (BuildContext ctx, index) {
-                                  return Image.memory(images[index]);
+                                  return Image.memory(images[index].binary);
                                 },
                                 itemCount: images.length,
                               ),

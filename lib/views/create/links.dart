@@ -1,10 +1,11 @@
+import 'package:first_test/views/error.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:first_test/api.dart';
 import 'package:flutter/services.dart';
 
 class Links extends StatefulWidget {
-  final int id;
+  final int? id;
 
   const Links({Key? key, required this.id}) : super(key: key);
 
@@ -13,7 +14,7 @@ class Links extends StatefulWidget {
 }
 
 class _LinksState extends State<Links> {
-  late Future<Map<String, dynamic>> response;
+  late Future<Map<String, dynamic>?> response;
   late final TextEditingController _controllerLink;
   late final TextEditingController _controllerId;
 
@@ -47,9 +48,12 @@ class _LinksState extends State<Links> {
           },
           icon: const Icon(Icons.arrow_back_sharp),
         ),
-        title: FutureBuilder<Map<String, dynamic>>(
+        title: FutureBuilder<Map<String, dynamic>?>(
           future: response,
           builder: (context, snapshot) {
+            if (widget.id == null) {
+              return const Errores("not_exist");
+            }
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Scaffold(
                 body: SizedBox(

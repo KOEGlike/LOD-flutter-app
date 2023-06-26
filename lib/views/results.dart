@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:first_test/api.dart';
+import 'error.dart';
 
 class ResultsPage extends StatefulWidget {
-  final int id;
+  final int? id;
   const ResultsPage({Key? key, required this.id}) : super(key: key);
 
   @override
@@ -11,7 +12,7 @@ class ResultsPage extends StatefulWidget {
 }
 
 class _ResultsPageState extends State<ResultsPage> {
-  late Future<Map<String, dynamic>> response;
+  late Future<Map<String, dynamic>?> response;
 
   void reload() {
     setState(() {
@@ -27,11 +28,17 @@ class _ResultsPageState extends State<ResultsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>>(
+    return FutureBuilder<Map<String, dynamic>?>(
       future: response,
       builder: (context, snapshot) {
+        if (widget.id == null) {
+          return const Errores("not_exist");
+        }
         if (snapshot.hasData) {
           final List<dynamic> images = snapshot.data!['images'];
+          if (snapshot.data!['name'] == null) {
+            return const Errores("not_exist");
+          }
           final String name = snapshot.data!['name'];
 
           return Scaffold(
@@ -39,7 +46,7 @@ class _ResultsPageState extends State<ResultsPage> {
                 title: Text('$name results'),
                 leading: IconButton(
                   onPressed: () {
-                    context.go("/home");
+                    context.goNamed("/home");
                   },
                   icon: const Icon(Icons.arrow_back_sharp),
                 ),
