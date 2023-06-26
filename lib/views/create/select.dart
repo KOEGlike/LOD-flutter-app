@@ -15,8 +15,8 @@ class CreatePage extends StatefulWidget {
 class _CreatePageState extends State<CreatePage> {
   late final TextEditingController _controller;
 
-  List<Image> images = [];
-  late Future<List<File>> pickedImagesFuture = Future<List<File>>.value([]);
+  List<Uint8List> images = [];
+  late Future<List<File>> pickedUint8ListsFuture = Future<List<File>>.value([]);
 
   @override
   void initState() {
@@ -24,8 +24,8 @@ class _CreatePageState extends State<CreatePage> {
     super.initState();
   }
 
-  Future<List<Image>> pickImages() async {
-    List<Image> files = [];
+  Future<List<Uint8List>> pickUint8Lists() async {
+    List<Uint8List> files = [];
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: FileType.custom,
@@ -33,9 +33,10 @@ class _CreatePageState extends State<CreatePage> {
     );
 
     if (result != null) {
-      files = result.files.map((path) {
-        return Image.memory(path.bytes ?? Uint8List(1));
-      }).toList();
+      files = [
+        for (int i = 0; i < result.files.length; i++)
+          result.files[i].bytes ?? Uint8List(0)
+      ];
     }
     return files;
   }
@@ -52,7 +53,9 @@ class _CreatePageState extends State<CreatePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           int id = await create(_controller.text);
-          //upload(images, id);
+          debugPrint(id.toString());
+          debugPrint(id.toString());
+          upload(images, id);
           if (context.mounted) {
             context.go("create/links?=$id");
           }
@@ -86,7 +89,7 @@ class _CreatePageState extends State<CreatePage> {
                 child: SizedBox(
                   width: 600,
                   child: FutureBuilder(
-                    future: pickedImagesFuture,
+                    future: pickedUint8ListsFuture,
                     builder: (BuildContext context,
                         AsyncSnapshot<dynamic> snapshot) {
                       return Theme(
@@ -110,11 +113,11 @@ class _CreatePageState extends State<CreatePage> {
                               IconButton(
                                 onPressed: () async {
                                   if (snapshot.hasData) {
-                                    final List<Image> pickedImages =
-                                        await pickImages();
+                                    final List<Uint8List> pickedUint8Lists =
+                                        await pickUint8Lists();
 
                                     setState(() {
-                                      images = images + pickedImages;
+                                      images = images + pickedUint8Lists;
                                     });
                                   }
                                 },
@@ -134,7 +137,7 @@ class _CreatePageState extends State<CreatePage> {
                                         crossAxisSpacing: 20,
                                         mainAxisSpacing: 20),
                                 itemBuilder: (BuildContext ctx, index) {
-                                  return images[index];
+                                  return Image.memory(images[index]);
                                 },
                                 itemCount: images.length,
                               ),

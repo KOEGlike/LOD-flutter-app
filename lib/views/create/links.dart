@@ -52,7 +52,11 @@ class _LinksState extends State<Links> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Scaffold(
-                body: CircularProgressIndicator(),
+                body: SizedBox(
+                  width: 10,
+                  height: 10,
+                  child: CircularProgressIndicator(),
+                ),
               );
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
@@ -61,7 +65,11 @@ class _LinksState extends State<Links> {
               return Text(name);
             } else {
               return const Scaffold(
-                body: CircularProgressIndicator(),
+                body: SizedBox(
+                  width: 10,
+                  height: 10,
+                  child: CircularProgressIndicator(),
+                ),
               );
             }
           },
@@ -71,8 +79,9 @@ class _LinksState extends State<Links> {
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Padding(
+          Container(
             padding: const EdgeInsets.only(bottom: 40),
+            height: 200,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -90,39 +99,48 @@ class _LinksState extends State<Links> {
                     ),
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: () async {
-                    copyToClipBoard(_controllerLink.text);
-                  },
-                  child: const Text("Copy!"),
+                SizedBox(
+                  width: 10,
+                  height: 10,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      copyToClipBoard(_controllerLink.text);
+                    },
+                    child: const Text(
+                      "Copy!",
+                    ),
+                  ),
                 )
               ],
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: SizedBox(
-                  width: 100,
-                  child: TextField(
-                    controller: _controllerId,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'LOD id',
+          SizedBox(
+            height: 200,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: SizedBox(
+                    width: 100,
+                    child: TextField(
+                      controller: _controllerId,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'LOD id',
+                      ),
+                      enabled: false,
                     ),
-                    enabled: false,
                   ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  copyToClipBoard(_controllerId.text);
-                },
-                child: const Text("Copy!"),
-              ),
-            ],
+                ElevatedButton(
+                  onPressed: () async {
+                    copyToClipBoard(_controllerId.text);
+                  },
+                  child: const Text("Copy!"),
+                ),
+              ],
+            ),
           ),
         ],
       )),

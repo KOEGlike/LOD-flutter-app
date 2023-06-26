@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: SizedBox(
-                width: 70,
+                width: 90,
                 height: 55,
                 child: ElevatedButton(
                   onPressed: () {

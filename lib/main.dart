@@ -82,6 +82,13 @@ final _router = GoRouter(
       },
     ),
   ],
+  redirect: (context, state) {
+    if (state.fullPath == "") {
+      return "/home";
+    } else {
+      return state.fullPath;
+    }
+  },
 );
 
 void main() {
