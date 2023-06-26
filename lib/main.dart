@@ -24,7 +24,7 @@ final _router = GoRouter(
       },
       routes: [
         GoRoute(
-          path: '/home',
+          path: '/',
           parentNavigatorKey: _shellNavigatorKey,
           builder: (context, state) {
             return HomePage(
@@ -55,11 +55,11 @@ final _router = GoRouter(
       parentNavigatorKey: _rootNavigatorKey,
       path: '/vote',
       pageBuilder: (context, state) {
-        debugPrint(state.queryParameters["id"]);
+        debugPrint(state.queryParameters['id']);
         return NoTransitionPage(
           key: UniqueKey(),
           child: Vote(
-            id: int.tryParse(state.pathParameters['id'] ?? ''),
+            id: int.tryParse(state.queryParameters['id'] ?? ''),
           ),
         );
       },
@@ -88,13 +88,6 @@ final _router = GoRouter(
       },
     ),
   ],
-  redirect: (context, state) {
-    if (state.fullPath == "") {
-      return "/home";
-    } else {
-      return state.fullPath;
-    }
-  },
 );
 
 void main() {

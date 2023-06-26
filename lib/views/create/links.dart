@@ -44,7 +44,7 @@ class _LinksState extends State<Links> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            context.go("/home");
+            context.go("/");
           },
           icon: const Icon(Icons.arrow_back_sharp),
         ),

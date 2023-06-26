@@ -33,7 +33,7 @@ final List<NavIcon> navBarItems = <NavIcon>[
   NavIcon(
     icon: const Icon(Icons.home),
     label: 'Home',
-    route: '/home',
+    route: '/',
   ),
   NavIcon(
     icon: const Icon(Icons.add_circle_outline_outlined),
