@@ -89,7 +89,8 @@ class _VoteState extends State<Vote> {
                       onEnd: () {
                         context.go('/results?id=$id');
                       },
-                      cardBuilder: (context, index) {
+                      cardBuilder: (context, index, horizontalOffsetPercentage,
+                          verticalOffsetPercentage) {
                         return ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: Image.network(
