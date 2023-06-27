@@ -1,6 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+class ErrorType {
+  final String message;
+  final Widget? content;
+  const ErrorType(this.message,  {Key? key, this.content});
+  final 
+}
+
+const Icon lol = Icon(Icons.abc);
+
+abstract class ErrorTypes {
+  static const ErrorType pageDoseNotExist =
+      ErrorType("This page does not exist",Text("This page dose not exist"));
+}
+
 class Errores extends StatelessWidget {
   final String errorType;
   const Errores(this.errorType, {super.key});

@@ -6,7 +6,7 @@ class NavIcon {
   final Icon icon;
   final String route;
   final String label;
-  NavIcon({
+  const NavIcon({
     Key? key,
     required this.icon,
     required this.route,
@@ -14,49 +14,38 @@ class NavIcon {
   });
 }
 
-int _calculateSelectedIndex(BuildContext context) {
+int _calculateSelectedIndex(BuildContext context, List<NavIcon> navIcons) {
   final String location = GoRouterState.of(context).location;
-  if (location.startsWith(navBarItems[0].route)) {
-    return 0;
-  }
-  if (location.startsWith(navBarItems[1].route)) {
-    return 1;
-  }
-  if (location.startsWith(navBarItems[2].route)) {
-    return 2;
+  debugPrint(location);
+
+  for (int i = 0; i < navIcons.length; i++) {
+    if (location == navBarItems[i].route) {
+      return i;
+    }
   }
   return 0;
 }
 
-final List<NavIcon> navBarItems = <NavIcon>[
+const List<NavIcon> navBarItems = <NavIcon>[
   NavIcon(
-    icon: const Icon(Icons.home),
+    icon: Icon(Icons.home),
     label: 'Home',
     route: '/',
   ),
   NavIcon(
-    icon: const Icon(Icons.add_circle_outline_outlined),
+    icon: Icon(Icons.add_circle_outline_outlined),
     label: 'Create',
     route: '/create',
   ),
   NavIcon(
-    icon: const Icon(Icons.account_circle_outlined),
+    icon: Icon(Icons.account_circle_outlined),
     label: 'Account',
     route: '/account',
   ),
 ];
 
-void onTap(int value, BuildContext context) {
-  switch (value) {
-    case 0:
-      return context.go(navBarItems[0].route);
-    case 1:
-      return context.go(navBarItems[1].route);
-    case 2:
-      return context.go(navBarItems[2].route);
-    default:
-      return context.go(navBarItems[0].route);
-  }
+void onTap(int value, BuildContext context, List<NavIcon> navIcons) {
+  context.go(navIcons[value].route);
 }
 
 class Skeleton extends StatefulWidget {
@@ -97,9 +86,9 @@ Scaffold mobile(BuildContext context, Widget child) {
             label: navBarItems[i].label,
           )
       ],
-      currentIndex: _calculateSelectedIndex(context),
+      currentIndex: _calculateSelectedIndex(context, navBarItems),
       onTap: (int i) {
-        onTap(i, context);
+        onTap(i, context, navBarItems);
       },
     ),
     body: child,
@@ -144,7 +133,7 @@ class _FloatingAppBarState extends State<FloatingAppBar> {
   @override
   void didChangeDependencies() {
     _colors = [for (int i = 0; i < navBarItems.length; i++) base(context)];
-    currentIndex = _calculateSelectedIndex(context);
+    currentIndex = _calculateSelectedIndex(context, navBarItems);
     _colors[currentIndex] = current(context);
     super.didChangeDependencies();
   }
@@ -199,7 +188,8 @@ class _FloatingAppBarState extends State<FloatingAppBar> {
                               setState(() {
                                 if (isHovering) {
                                   _colors[i] = hover(context);
-                                } else if (_calculateSelectedIndex(context) ==
+                                } else if (_calculateSelectedIndex(
+                                        context, navBarItems) ==
                                     i) {
                                   _colors[i] = current(context);
                                 } else {
@@ -208,10 +198,7 @@ class _FloatingAppBarState extends State<FloatingAppBar> {
                               });
                             },
                             onPressed: () {
-                              context.go(navBarItems[i].route);
-                              setState(() {
-                                currentIndex - _calculateSelectedIndex(context);
-                              });
+                              onTap(i, context, navBarItems);
                             },
                             icon: navBarItems[i].icon,
                             label: Text(

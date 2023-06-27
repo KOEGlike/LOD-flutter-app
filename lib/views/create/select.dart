@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:first_test/api.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter/foundation.dart';
 
 class PickedImages {
   final Uint8List binary;
@@ -39,10 +40,19 @@ class _CreatePageState extends State<CreatePage> {
       allowedExtensions: ['jpg', 'png', 'gif', 'webp', 'jpeg'],
     );
 
-    if (result != null) {
+    if (result == null) {
+      return [];
+    }
+    if (kIsWeb) {
       files = [
         for (int i = 0; i < result.files.length; i++)
           PickedImages(result.files[i].bytes ?? Uint8List(0),
+              result.files[i].extension ?? ".png")
+      ];
+    } else {
+      files = [
+        for (int i = 0; i < result.files.length; i++)
+          PickedImages(File(result.files[0].path ?? "").readAsBytesSync(),
               result.files[i].extension ?? ".png")
       ];
     }
@@ -86,7 +96,7 @@ class _CreatePageState extends State<CreatePage> {
                     width: 200,
                     child: TextField(
                       controller: _controller,
-                      keyboardType: TextInputType.number,
+                      keyboardType: TextInputType.text,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Name Of LOD',

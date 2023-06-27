@@ -20,8 +20,15 @@ void vote(int id, bool isyes, List response) async {
   http.MultipartRequest request = http.MultipartRequest("POST", url);
   request.fields["isyes"] = isyes.toString();
   request.fields["id"] = id.toString();
-  http.StreamedResponse streamedResponse = await request.send();
-  http.Response response = await http.Response.fromStream(streamedResponse);
+  late http.StreamedResponse streamedResponse;
+  try {
+    streamedResponse = await request.send();
+  } on http.ClientException catch (e) {}
+
+  late http.Response response;
+  try {
+    response = await http.Response.fromStream(streamedResponse);
+  } catch (e) {}
   debugPrint(response.statusCode.toString());
   if (response.statusCode != 200) {
     throw jsonDecode(response.body)["message"];

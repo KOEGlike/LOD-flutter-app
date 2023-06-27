@@ -1,7 +1,7 @@
 import 'package:first_test/api.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'error.dart';
+import '../error.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 
 class Vote extends StatefulWidget {

@@ -1,4 +1,4 @@
-import 'package:first_test/views/error.dart';
+import 'package:first_test/error.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:first_test/api.dart';

@@ -8,13 +8,11 @@ import 'views/create/links.dart';
 import 'package:go_router/go_router.dart';
 import 'skeleton.dart';
 
-//https://stackoverflow.com/questions/71011598/how-to-work-with-navigationbar-in-go-router-flutter
-
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 final _router = GoRouter(
-  initialLocation: '/home',
+  initialLocation: '/',
   navigatorKey: _rootNavigatorKey,
   routes: [
     ShellRoute(
