@@ -6,7 +6,7 @@ import 'views/account.dart';
 import 'views/create/select.dart';
 import 'views/create/links.dart';
 import 'package:go_router/go_router.dart';
-import 'skeleton.dart';
+import 'views/skeleton.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();

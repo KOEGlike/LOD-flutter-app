@@ -1,4 +1,4 @@
-import 'package:first_test/error.dart';
+import 'package:first_test/custom_error.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:first_test/api.dart';
@@ -52,15 +52,13 @@ class _LinksState extends State<Links> {
           future: response,
           builder: (context, snapshot) {
             if (widget.id == null) {
-              return const Errores("not_exist");
+              return Text(ErrorTypes.pageDoseNotExist.message);
             }
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Scaffold(
-                body: SizedBox(
-                  width: 10,
-                  height: 10,
-                  child: CircularProgressIndicator(),
-                ),
+              return const SizedBox(
+                width: 10,
+                height: 10,
+                child: CircularProgressIndicator(),
               );
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
@@ -68,12 +66,10 @@ class _LinksState extends State<Links> {
               final String name = snapshot.data!['name'];
               return Text(name);
             } else {
-              return const Scaffold(
-                body: SizedBox(
-                  width: 10,
-                  height: 10,
-                  child: CircularProgressIndicator(),
-                ),
+              return const SizedBox(
+                width: 10,
+                height: 10,
+                child: CircularProgressIndicator(),
               );
             }
           },
@@ -85,7 +81,6 @@ class _LinksState extends State<Links> {
         children: [
           Container(
             padding: const EdgeInsets.only(bottom: 40),
-            height: 200,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -103,48 +98,41 @@ class _LinksState extends State<Links> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: 10,
-                  height: 10,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      copyToClipBoard(_controllerLink.text);
-                    },
-                    child: const Text(
-                      "Copy!",
-                    ),
+                ElevatedButton(
+                  onPressed: () async {
+                    copyToClipBoard(_controllerLink.text);
+                  },
+                  child: const Text(
+                    "Copy!",
                   ),
                 )
               ],
             ),
           ),
-          SizedBox(
-            height: 200,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: SizedBox(
-                    width: 100,
-                    child: TextField(
-                      controller: _controllerId,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'LOD id',
-                      ),
-                      enabled: false,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: SizedBox(
+                  width: 100,
+                  child: TextField(
+                    controller: _controllerId,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'LOD id',
                     ),
+                    enabled: false,
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: () async {
-                    copyToClipBoard(_controllerId.text);
-                  },
-                  child: const Text("Copy!"),
-                ),
-              ],
-            ),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  copyToClipBoard(_controllerId.text);
+                },
+                child: const Text("Copy!"),
+              ),
+            ],
           ),
         ],
       )),

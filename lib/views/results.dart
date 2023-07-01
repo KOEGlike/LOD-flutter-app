@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:first_test/api.dart';
-import 'error.dart';
+import '../custom_error.dart';
 
 class ResultsPage extends StatefulWidget {
   final int? id;
@@ -32,12 +32,12 @@ class _ResultsPageState extends State<ResultsPage> {
       future: response,
       builder: (context, snapshot) {
         if (widget.id == null) {
-          return const Errores("not_exist");
+          return const CustomErrorView(ErrorTypes.pageDoseNotExist);
         }
         if (snapshot.hasData) {
           final List<dynamic> images = snapshot.data!['images'];
           if (snapshot.data!['name'] == null) {
-            return const Errores("not_exist");
+            return const CustomErrorView(ErrorTypes.pageDoseNotExist);
           }
           final String name = snapshot.data!['name'];
 

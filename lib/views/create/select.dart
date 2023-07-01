@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'dart:typed_data';
+import 'package:first_test/custom_error.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:first_test/api.dart';
@@ -22,6 +22,10 @@ class CreatePage extends StatefulWidget {
 
 class _CreatePageState extends State<CreatePage> {
   late final TextEditingController _controller;
+
+  bool uploading = false;
+
+  bool hasError = false;
 
   List<PickedImages> images = [];
   late Future<List<File>> pickedUint8ListsFuture = Future<List<File>>.value([]);
@@ -69,22 +73,40 @@ class _CreatePageState extends State<CreatePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          if (_controller.text != "") {
-            int id = await create(_controller.text);
+          onPressed: () async {
+            if (_controller.text != "") {
+              setState(() {
+                uploading = true;
+              });
+              late int id;
+              try {
+                id = await create(_controller.text);
+              } on ErrorType catch (e) {
+                hasError = true;
+                //Scaffold.of(context).
+              }
 
-            await upload(images, id, _controller.text);
-            if (context.mounted) {
-              context.go("/create/links?id=$id");
+              await upload(images, id, _controller.text);
+              setState(() {
+                uploading = false;
+              });
+              if (context.mounted) {
+                context.go("/create/links?id=$id");
+              }
             }
-          }
-        },
-        child: Icon(
-          Icons.publish_rounded,
-          color: Theme.of(context).colorScheme.onSecondary,
-          size: 30,
-        ),
-      ),
+          },
+          child: SizedBox(
+            width: 30,
+            height: 30,
+            child: uploading
+                ? CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.onSecondary,
+                  )
+                : Icon(
+                    Icons.publish_rounded,
+                    color: Theme.of(context).colorScheme.onSecondary,
+                  ),
+          )),
       body: SingleChildScrollView(
         child: Center(
           child: Column(

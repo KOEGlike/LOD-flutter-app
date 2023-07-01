@@ -1,4 +1,6 @@
+import 'package:first_test/custom_error.dart';
 import 'package:first_test/views/create/select.dart';
+// ignore: depend_on_referenced_packages
 import 'package:http_parser/http_parser.dart';
 /*import 'package:path/path.dart' as p;
 import 'dart:io';
@@ -11,8 +13,19 @@ Future<Map<String, dynamic>?> get(int? id) async {
   if (id == null) return null;
   Uri url = Uri.https(
       'koeg.000webhostapp.com', 'sop/api.php/get', {"id": id.toString()});
-  http.Response response = await http.get(url);
-  return jsonDecode(response.body);
+
+  late http.Response response;
+  try {
+    response = await http.get(url);
+  } on http.ClientException catch (e) {
+    throw ErrorType(e.message);
+  }
+  final Map<String, dynamic>? body = jsonDecode(response.body);
+  if (body?["name"] == "" || body?["name"] == null) {
+    throw ErrorTypes.pageDoseNotExist;
+  }
+
+  return body;
 }
 
 void vote(int id, bool isyes, List response) async {
@@ -20,15 +33,21 @@ void vote(int id, bool isyes, List response) async {
   http.MultipartRequest request = http.MultipartRequest("POST", url);
   request.fields["isyes"] = isyes.toString();
   request.fields["id"] = id.toString();
+
   late http.StreamedResponse streamedResponse;
   try {
     streamedResponse = await request.send();
-  } on http.ClientException catch (e) {}
+  } on http.ClientException catch (e) {
+    throw ErrorType(e.message);
+  }
 
   late http.Response response;
   try {
     response = await http.Response.fromStream(streamedResponse);
-  } catch (e) {}
+  } on http.ClientException catch (e) {
+    throw ErrorType(e.message);
+  }
+
   debugPrint(response.statusCode.toString());
   if (response.statusCode != 200) {
     throw jsonDecode(response.body)["message"];
@@ -54,8 +73,21 @@ Future<void> upload(
           filename: "$name$i.${images[i].extension}"),
     );
     request.fields["id"] = id.toString();
-    http.StreamedResponse streamedResponse = await request.send();
-    http.Response response = await http.Response.fromStream(streamedResponse);
+
+    late http.StreamedResponse streamedResponse;
+    try {
+      streamedResponse = await request.send();
+    } on http.ClientException catch (e) {
+      throw ErrorType(e.message);
+    }
+
+    late http.Response response;
+    try {
+      response = await http.Response.fromStream(streamedResponse);
+    } on http.ClientException catch (e) {
+      throw ErrorType(e.message);
+    }
+
     if (response.statusCode != 200) {
       throw jsonDecode(response.body)['message'].toString();
     }
@@ -70,7 +102,7 @@ Future<int> create(String name) async {
   http.Response response = await http.Response.fromStream(streamedResponse);
   debugPrint(response.statusCode.toString());
   if (response.statusCode != 200) {
-    throw jsonDecode(response.body)["message"];
+    throw ErrorType(jsonDecode(response.body)["message"]);
   } else {
     return int.parse(jsonDecode(response.body)["id"]);
   }

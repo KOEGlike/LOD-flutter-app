@@ -1,7 +1,7 @@
 import 'package:first_test/api.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../error.dart';
+import '../custom_error.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 
 class Vote extends StatefulWidget {
@@ -35,7 +35,7 @@ class _VoteState extends State<Vote> {
       future: response,
       builder: (context, snapshot) {
         if (widget.id == null) {
-          return const Errores("not_exist");
+          return const CustomErrorView(ErrorTypes.pageDoseNotExist);
         }
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
@@ -46,7 +46,7 @@ class _VoteState extends State<Vote> {
         } else if (snapshot.hasData) {
           final List<dynamic> images = snapshot.data!['images'];
           if (snapshot.data!['name'] == null) {
-            return const Errores("not_exist");
+            return const CustomErrorView(ErrorTypes.pageDoseNotExist);
           }
           final String name = snapshot.data!['name'];
 
