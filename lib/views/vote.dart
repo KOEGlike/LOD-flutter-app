@@ -20,6 +20,7 @@ class _VoteState extends State<Vote> {
   @override
   void didChangeDependencies() {
     response = get(widget.id);
+
     super.didChangeDependencies();
   }
 

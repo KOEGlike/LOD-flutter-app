@@ -85,8 +85,9 @@ class _CreatePageState extends State<CreatePage> {
                 hasError = true;
                 //Scaffold.of(context).
               }
-
-              await upload(images, id, _controller.text);
+              try {
+                await upload(images, id, _controller.text);
+              } on ErrorSummary catch (e) {}
               setState(() {
                 uploading = false;
               });
@@ -173,12 +174,15 @@ class _CreatePageState extends State<CreatePage> {
                               child: GridView.builder(
                                 gridDelegate:
                                     const SliverGridDelegateWithMaxCrossAxisExtent(
-                                        maxCrossAxisExtent: 250,
-                                        childAspectRatio: 3 / 2,
-                                        crossAxisSpacing: 20,
-                                        mainAxisSpacing: 20),
+                                        maxCrossAxisExtent: 170,
+                                        //childAspectRatio: 3 / 2,
+                                        crossAxisSpacing: 10,
+                                        mainAxisSpacing: 10),
                                 itemBuilder: (BuildContext ctx, index) {
-                                  return Image.memory(images[index].binary);
+                                  return ClipRRect(
+                                    borderRadius: BorderRadius.circular(30),
+                                    child: Image.memory(images[index].binary),
+                                  );
                                 },
                                 itemCount: images.length,
                               ),
