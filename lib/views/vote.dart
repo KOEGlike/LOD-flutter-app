@@ -34,14 +34,18 @@ class _VoteState extends State<Vote> {
   Widget build(BuildContext context) {
     return FutureBuilder<Map<String, dynamic>?>(
       future: response,
-      builder: (context, snapshot) {
+      builder: (BuildContext context,
+          AsyncSnapshot<Map<String, dynamic>?> snapshot) {
         if (widget.id == null) {
           return const CustomErrorView(ErrorTypes.pageDoseNotExist);
         }
+
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
+        } else if (snapshot.data == null) {
+          return const CustomErrorView(ErrorTypes.pageDoseNotExist);
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else if (snapshot.hasData) {
