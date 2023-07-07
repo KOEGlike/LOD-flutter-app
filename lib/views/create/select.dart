@@ -56,7 +56,7 @@ class _CreatePageState extends State<CreatePage> {
     } else {
       files = [
         for (int i = 0; i < result.files.length; i++)
-          PickedImages(File(result.files[0].path ?? "").readAsBytesSync(),
+          PickedImages(File(result.files[i].path ?? "").readAsBytesSync(),
               result.files[i].extension ?? ".png")
       ];
     }
@@ -84,6 +84,7 @@ class _CreatePageState extends State<CreatePage> {
               } on ErrorType catch (e) {
                 setState(() {
                   hasError = true;
+                  uploading == false;
                 });
                 ScaffoldMessenger.of(context)
                     .showSnackBar(SnackBar(content: Text(e.message)));
@@ -98,6 +99,7 @@ class _CreatePageState extends State<CreatePage> {
                 }
                 setState(() {
                   hasError = true;
+                  uploading == false;
                 });
               }
               setState(() {
