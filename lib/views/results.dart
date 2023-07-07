@@ -46,7 +46,7 @@ class _ResultsPageState extends State<ResultsPage> {
                 title: Text('$name results'),
                 leading: IconButton(
                   onPressed: () {
-                    context.goNamed("/");
+                    context.go("/");
                   },
                   icon: const Icon(Icons.arrow_back_sharp),
                 ),
