@@ -67,9 +67,7 @@ class _SkeletonState extends State<Skeleton> {
   Widget build(BuildContext context) {
     if (defaultTargetPlatform == TargetPlatform.android ||
         defaultTargetPlatform == TargetPlatform.iOS ||
-        (kIsWeb &&
-            (defaultTargetPlatform == TargetPlatform.iOS ||
-                defaultTargetPlatform == TargetPlatform.android))) {
+        (kIsWeb && MediaQuery.of(context).size.width < 600)) {
       return mobile(context, widget.child);
     } else {
       return desktop(context, widget.child);

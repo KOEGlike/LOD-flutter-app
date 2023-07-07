@@ -82,11 +82,24 @@ class _CreatePageState extends State<CreatePage> {
               try {
                 id = await create(_controller.text);
               } on ErrorType catch (e) {
-                hasError = true;
+                setState(() {
+                  hasError = true;
+                });
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(e.message)));
                 //Scaffold.of(context).
               }
-
-              await upload(images, id, _controller.text);
+              try {
+                await upload(images, id, _controller.text);
+              } on ErrorType catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text(e.message)));
+                }
+                setState(() {
+                  hasError = true;
+                });
+              }
               setState(() {
                 uploading = false;
               });
@@ -98,14 +111,17 @@ class _CreatePageState extends State<CreatePage> {
           child: SizedBox(
             width: 30,
             height: 30,
-            child: uploading
-                ? CircularProgressIndicator(
-                    color: Theme.of(context).colorScheme.onSecondary,
-                  )
-                : Icon(
-                    Icons.publish_rounded,
-                    color: Theme.of(context).colorScheme.onSecondary,
-                  ),
+            child: hasError
+                ? Icon(Icons.priority_high_rounded,
+                    color: Theme.of(context).colorScheme.error)
+                : uploading
+                    ? CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.onSecondary,
+                      )
+                    : Icon(
+                        Icons.publish_rounded,
+                        color: Theme.of(context).colorScheme.onSecondary,
+                      ),
           )),
       body: SingleChildScrollView(
         child: Center(
@@ -173,12 +189,17 @@ class _CreatePageState extends State<CreatePage> {
                               child: GridView.builder(
                                 gridDelegate:
                                     const SliverGridDelegateWithMaxCrossAxisExtent(
-                                        maxCrossAxisExtent: 250,
-                                        childAspectRatio: 3 / 2,
-                                        crossAxisSpacing: 20,
-                                        mainAxisSpacing: 20),
+                                        maxCrossAxisExtent: 170,
+                                        //childAspectRatio: 3 / 2,
+                                        crossAxisSpacing: 10,
+                                        mainAxisSpacing: 10),
                                 itemBuilder: (BuildContext ctx, index) {
-                                  return Image.memory(images[index].binary);
+                                  return SizedBox.shrink(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(0),
+                                      child: Image.memory(images[index].binary),
+                                    ),
+                                  );
                                 },
                                 itemCount: images.length,
                               ),

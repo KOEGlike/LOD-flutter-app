@@ -40,10 +40,10 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  void redirectToVote() {
+  void redirectTo(String location) {
     if (_controller.text != "") {
       context.go(
-        '/vote?id=${_controller.text}',
+        '$location?id=${_controller.text}',
       );
     }
   }
@@ -59,7 +59,7 @@ class _HomePageState extends State<HomePage> {
               width: 200,
               child: TextField(
                 onSubmitted: (value) {
-                  redirectToVote();
+                  redirectTo("/vote");
                 },
                 keyboardType: TextInputType.number,
                 controller: _controller,
@@ -76,7 +76,10 @@ class _HomePageState extends State<HomePage> {
                 height: 55,
                 child: ElevatedButton(
                   onPressed: () {
-                    redirectToVote();
+                    redirectTo("/vote");
+                  },
+                  onLongPress: () {
+                    redirectTo("/results");
                   },
                   child: const Text('Start'),
                 ),

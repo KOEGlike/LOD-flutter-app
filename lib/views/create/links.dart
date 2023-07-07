@@ -54,12 +54,15 @@ class _LinksState extends State<Links> {
             if (widget.id == null) {
               return Text(ErrorTypes.pageDoseNotExist.message);
             }
+
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const SizedBox(
                 width: 10,
                 height: 10,
                 child: CircularProgressIndicator(),
               );
+            } else if (snapshot.data == null) {
+              return Text(ErrorTypes.pageDoseNotExist.message);
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else if (snapshot.hasData) {
@@ -85,9 +88,10 @@ class _LinksState extends State<Links> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(right: 10),
+                  padding: const EdgeInsets.only(right: 20),
                   child: SizedBox(
-                    width: 450,
+                    // width: 400,
+                    width: MediaQuery.of(context).size.width * 0.55,
                     child: TextField(
                       controller: _controllerLink,
                       decoration: const InputDecoration(

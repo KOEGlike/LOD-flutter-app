@@ -34,7 +34,15 @@ class _ResultsPageState extends State<ResultsPage> {
         if (widget.id == null) {
           return const CustomErrorView(ErrorTypes.pageDoseNotExist);
         }
-        if (snapshot.hasData) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        } else if (snapshot.data == null) {
+          return const CustomErrorView(ErrorTypes.pageDoseNotExist);
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else if (snapshot.hasData) {
           final List<dynamic> images = snapshot.data!['images'];
           if (snapshot.data!['name'] == null) {
             return const CustomErrorView(ErrorTypes.pageDoseNotExist);
@@ -73,12 +81,8 @@ class _ResultsPageState extends State<ResultsPage> {
                       }),
                 ),
               ));
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
         } else {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
+          return const CustomErrorView(ErrorTypes.pageDoseNotExist);
         }
       },
     );

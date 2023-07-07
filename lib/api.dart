@@ -18,17 +18,17 @@ Future<Map<String, dynamic>?> get(int? id) async {
   try {
     response = await http.get(url);
   } on http.ClientException catch (e) {
-    throw ErrorType(e.message);
+    throw Future.error(ErrorType(e.message));
   }
   final Map<String, dynamic>? body = jsonDecode(response.body);
   if (body?["name"] == "" || body?["name"] == null) {
-    throw ErrorTypes.pageDoseNotExist;
+    return null;
   }
 
   return body;
 }
 
-void vote(int id, bool isyes, List response) async {
+Future<void> vote(int id, bool isyes, List response) async {
   Uri url = Uri.http('koeg.000webhostapp.com', 'sop/api.php/vote');
   http.MultipartRequest request = http.MultipartRequest("POST", url);
   request.fields["isyes"] = isyes.toString();
@@ -50,7 +50,7 @@ void vote(int id, bool isyes, List response) async {
 
   debugPrint(response.statusCode.toString());
   if (response.statusCode != 200) {
-    throw jsonDecode(response.body)["message"];
+    throw ErrorType(jsonDecode(response.body)['message'].toString());
   }
 }
 
@@ -89,7 +89,7 @@ Future<void> upload(
     }
 
     if (response.statusCode != 200) {
-      throw jsonDecode(response.body)['message'].toString();
+      throw ErrorType(jsonDecode(response.body)['message'].toString());
     }
   }
 }
