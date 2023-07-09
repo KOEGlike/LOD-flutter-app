@@ -236,4 +236,13 @@ else
 
     ]);
 }
+
+abstract class lol{
+    final function lol(){
+        print("lol");
+    }
+}
+
+lol->lol();
+
 ?>
