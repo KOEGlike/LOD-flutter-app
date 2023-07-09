@@ -20,5 +20,25 @@ class ImagesModel extends DataBase
         $images = $this->select("SELECT * FROM kepek WHERE origin_id = :value",[[":value", $SOPid]]);
             return $images;
     }
+
+    public function vote($id, $isYes)
+    {
+        try
+            {
+                if ($isYes == true)
+                {
+                    $this->executeStatemant("UPDATE kepek SET votes = votes+1, votes_amount = votes_amount + 1 WHERE id = :id",[[":id", $id]]);
+                }
+                else
+                {
+                    $this->executeStatemant("UPDATE kepek SET votes = votes-1, votes_amount = votes_amount + 1 WHERE id = :id",[[":id", $id]]);
+                }
+                
+            }
+            catch(PDOException $e)
+            {
+                pdo_error_response($e);
+            }
+    }
 }
 ?>
