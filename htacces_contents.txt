@@ -1,3 +1,0 @@
-Header set Access-Control-Allow-Origin "*"
-RewriteEngine on
-#RewriteRule ^api$ api.php [QSA,L]
