@@ -2,7 +2,7 @@
 
 class DataBase
 {
-    $conn=null;
+    public $conn=null;
 
     public function __construct()
     {
@@ -32,7 +32,7 @@ class DataBase
         return false;
     }
     
-    private function executeStatement($query = "" , $params = [])
+    public function executeStatement($query = "" , $params = [])
     {
         try {
             $stmt = $this->connection->prepare( $query );
