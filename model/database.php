@@ -23,8 +23,8 @@ class DataBase
     {
         try {
             $stmt = $this->executeStatement( $query , $params );
-            $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);				
-            $stmt->close();
+            $result = $$stmt->fetchAll(PDO::FETCH_ASSOC);				
+            $stmt->closeCursor()
             return $result;
         } catch(Exception $e) {
             throw New Exception( $e->getMessage() );
@@ -32,24 +32,27 @@ class DataBase
         return false;
     }
     
-    public function executeStatement($query = "" , $params = [])
-    {
-        try {
-            $stmt = $this->connection->prepare( $query );
-            if($stmt === false) {
-                throw New Exception("Unable to do prepared statement: " . $query);
+    public function executeStatement($query = "", $params = [])
+{
+    try {
+        $stmt = $this->conn->prepare($query);
+        if ($stmt === false) {
+            throw new Exception("Unable to prepare statement: " . $query);
+        }
+
+        if ($params) {
+            foreach ($params as $param) {
+                $stmt->bindValue($param[0], $param[1]);
             }
-            if( $params ) {
-                for ($i=0; $i < length($length); $i++) { 
-                    $stmt->bind_param($params[$i][0], $params[$i][1]);
-                }
-            }
-            $stmt->execute();
-            return $stmt;
-        } catch(Exception $e) {
-            throw New Exception( $e->getMessage() );
-        }	
+        }
+
+        $stmt->execute();
+        return $stmt;
+    } catch (Exception $e) {
+        throw new Exception($e->getMessage());
     }
+}
+
 }
 
 
