@@ -35,9 +35,10 @@ class ImagesModel extends DataBase
                 }
                 
             }
-            catch(PDOException $e)
+            catch(Exception $e)
             {
-                pdo_error_response($e);
+                throw new Exception($e->getMessage(), 1);
+                
             }
     }
 }
