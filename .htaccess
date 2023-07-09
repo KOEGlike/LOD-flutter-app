@@ -1,4 +1,13 @@
+Header set Access-Control-Allow-Origin "*"
+RewriteEngine on
+#RewriteRule ^api$ api.php [QSA,L]
+
+# put the db credentials here
 SetEnv DB_PASS 
-SetEnv DB_NAME 
+SetEnv DB_NAME
 SetEnv DB_USER_NAME 
 SetEnv DB_SERVER_NAME
+
+# put the path where you put the code
+SetEnv ROOT_PATH 
+

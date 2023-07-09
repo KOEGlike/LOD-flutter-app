@@ -1,6 +1,6 @@
 <?php
 
-abstract class DataBase
+class DataBase
 {
     $conn=null;
 
@@ -19,7 +19,38 @@ abstract class DataBase
         }
     }
 
-   
+    public function select($query = "" , $params = [])
+    {
+        try {
+            $stmt = $this->executeStatement( $query , $params );
+            $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);				
+            $stmt->close();
+            return $result;
+        } catch(Exception $e) {
+            throw New Exception( $e->getMessage() );
+        }
+        return false;
+    }
+    
+    private function executeStatement($query = "" , $params = [])
+    {
+        try {
+            $stmt = $this->connection->prepare( $query );
+            if($stmt === false) {
+                throw New Exception("Unable to do prepared statement: " . $query);
+            }
+            if( $params ) {
+                for ($i=0; $i < length($length); $i++) { 
+                    $stmt->bind_param($params[$i][0], $params[$i][1]);
+                }
+            }
+            $stmt->execute();
+            return $stmt;
+        } catch(Exception $e) {
+            throw New Exception( $e->getMessage() );
+        }	
+    }
 }
+
 
 ?>
