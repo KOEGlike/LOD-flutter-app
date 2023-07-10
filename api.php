@@ -1,9 +1,14 @@
 <?php
-function json_response($code, $response, $header = "Content-Type: application/json")
+function json_response($code, $response, $headers = array("Content-Type: application/json"))
 {
 
     http_response_code($code);
-    header("$header;",false);
+    header_remove('Set-Cookie');
+        if (is_array($headers) && count($headers)) {
+            foreach ($headers as $header) {
+                header($header);
+            }
+        }
     header("Access-Control-Allow-Origin:*;", false);
     header("Access-Control-Allow-Methods:GET,PUT,PATCH,POST,DELETE;",false);
     echo json_encode($response);
@@ -11,18 +16,7 @@ function json_response($code, $response, $header = "Content-Type: application/js
 }
 
 
-/*function makedir($dirname)
-{
-    try
-    {
-        mkdir($dirName);
 
-    }
-    catch(Exception $e)
-    {
-        json_response(500, ["success" => false, "message" => "failed to make directory: " . $e->getMessage() ]);
-    }
-}*/
 
 function pdo_error_response($e)
 {
@@ -34,6 +28,10 @@ function method_not_supported()
     json_response(500, ["success" => false, "message" => "this method is not supportid on this endpoint"]);
 }
 
+$servername= getenv('DB_SERVER_NAME');
+$dbname = getenv('DB_NAME');
+$username= getenv('DB_USER_NAME');
+$password=getenv('DB_PASS');
 
 try
 {
@@ -232,4 +230,13 @@ else
 
     ]);
 }
+
+abstract class lol{
+    final function lol(){
+        print("lol");
+    }
+}
+
+lol->lol();
+
 ?>
