@@ -34,10 +34,6 @@ function method_not_supported()
     json_response(500, ["success" => false, "message" => "this method is not supportid on this endpoint"]);
 }
 
-$servername = "localhost";
-$username = "id20173908_sopuser";
-$password = "fkrj(N@8ZBOZ\>_y";
-$dbname = "id20173908_sopdb";
 
 try
 {
