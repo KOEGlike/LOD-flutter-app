@@ -1,5 +1,5 @@
 <?php 
-require_once getenv('ROOT_PATH') . "/Model/database.php";
+require_once getenv('ROOT_PATH') . "/model/database.php";
 
 class ImagesModel extends DataBase
 {
