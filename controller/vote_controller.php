@@ -6,35 +6,49 @@ require_once getenv('ROOT_PATH') . "/controller/base_conroller.php";
 class VoteController extends BaseController
 {
     function vote(){
-        $err="";
+        $err400="";
+        $err500="";
+
 
         if($_POST["id"]==false)
         {
-            $this->sendResponse(400, ["success" => false, "message" => "id was not sent"]);
+            $err400.="id was not sent";
         }
 
         if (!($_POST["isyes"] == "true" || $_POST["isyes"] == "false"))
-        
         {
-            $this->sendResponse(400, ["success" => false, "message" => 'NOT A VALID "vote" variabe option']);
+            $err400.='Nota a valid "vote" variabe option';
         }
         
-        $imagesModell= null;
-            $isYes=$_POST["isyes"];
+        if($err500!="")
+        {
+            $this->sendResponse(200, ["success" => true, "message"=>$err400]);
+        }
+
+        $imagesModel= null;
+        
+        $isYes=$_POST["isyes"];
+        $id = $_POST['id'];
+        
         try {
             $imagesModel=  new imagesModel();
         } catch (Exeption $e) {
-            $this->pdoErrorResponse($e);
+            $err500.=$e->getMessage();
         }
 
         
         try
         {
-            $imagesModel->vote(null, $isYes);
+            $imagesModel->vote($id, $isYes);
         }
         catch(Exception $e)
         {
-            $this->pdoErrorResponse($e);
+            $err500.=$e->getMessage();
+        }
+
+        if($err500!="")
+        {
+            $this->sendResponse(200, ["success" => true, "message"=>$err500]);
         }
 
         $this->sendResponse(200, ["success" => true]);

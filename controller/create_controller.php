@@ -51,70 +51,75 @@ class UploadController extends BaseController
 
     function  uploadImage()
     {
-        if ($_FILES["file"] == false && $_POST["id"] == false)
+        $err400 = "";
+        $err500 = "";
+        
+        
+        if ($_FILES["file"] == false)
         {
-            $this->sendResponse(400, ["success" => false, "message" => "photo and id was not sent"]);
-        }
-        elseif ($_FILES["file"] == false)
-        {
-            $this->sendResponse(400, ["success" => false, "message" => "photo was not sent"]);
+            $err400.="Photo was not sent. ";
         }
         elseif ($_POST["id"] == false)
         {
-            $this->sendResponse(400, ["success" => false, "message" => "id variable was not sent"]);
+            $err400.="Id variable was not sent. ";
         }
+        
         $uploadedPhoto = $_FILES['file'];
         $id = $_POST["id"];
+        
         $target_dir = "images/$id/";
         $targetFile = $target_dir . basename($uploadedPhoto["name"]);
         
         $imagesModel=null;
-        try{
-        $imagesModel= new ImagesModel();
-        }
-        catch(Exception $e){
-           $this-> pdoErrorResponse($e);
-        }
-        
-        $err = "";
-
-        try {
-           $imagesModel-> insertImage($id,$uploadedPhoto["name"]);
-        } catch (Exception $e) {
-            $err.=$e;
-        }
-
-        
 
         // Check if file already exists
         if (file_exists($targetFile))
         {
-            $err .= " Sorry, file already exists.";
+            $err400 .= " Sorry, file already exists.";
 
         }
 
         // Check file size
         if ($uploadedPhoto["size"]> 26214400)
         {
-            $err .= " Sorry, your file is too large.";
+            $err400 .= " Sorry, your file is too large.";
 
         }
+
+
+        if ($err400 != "")
+        {
+            $this->sendResponse(500, ["success" => false, "message" => $err400]);
+        }
+
+        try
+        {
+        $imagesModel= new ImagesModel();
+        }
+        catch(Exception $e){
+
+           $err500.=$e->getMessage();;
+        }
         
-        
+        try {
+            $imagesModel-> insertImage($id,$uploadedPhoto["name"]);
+         } catch (Exception $e) {
+             $err500.=$e;
+         }
 
         if (!move_uploaded_file($uploadedPhoto["tmp_name"], $targetFile))
         {
-            $err .= " Sorry, the file couldnt be moved to the final location";
+            $err500 .= " Sorry, the file couldnt be moved to the final location";
         }
 
-        if ($err != "")
+        
+        elseif($err500 != "")
         {
-            $this->sendResponse(500, ["success" => false, "message" => $err]);
+            $this->sendResponse(500, ["success" => false, "message" => $err500]);
         }
-        else
-        {
+        
             $this->sendResponse(200, ["success" => true]);
-        }
+        
     }
 }
 
