@@ -192,6 +192,7 @@ elseif ($uri === "vote")
 {
     if ($_SERVER["REQUEST_METHOD"] === "POST")
     {
+        
         if ($_POST["isyes"] == "true" || $_POST["isyes"] == "false")
         {
             try
@@ -231,12 +232,5 @@ else
     ]);
 }
 
-abstract class lol{
-    final function lol(){
-        print("lol");
-    }
-}
-
-lol->lol();
 
 ?>

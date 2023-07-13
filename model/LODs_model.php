@@ -3,21 +3,21 @@ require_once getenv('ROOT_PATH') . "/model/database.php";
 
 class LODsModel extends DataBase
 {
-    public function insertNew($name)
+    public function insertNew(string $name) :int
     {
         try{
-        $this->executeStatement('INSERT INTO  sopNames(name) VALUES (:name)', [[':name', $name]])
+        $this->executeStatement('INSERT INTO  sopNames(name) VALUES (:name)', [[':name', $name]]);
         }
         catch(Exception $e)
         {
             throw new Exception($e->getMessage(), 1);  
         }
 
-        return $conn->lastInsertId();
+        return $this->conn->lastInsertId();
         
     }
 
-    public function getLOD($id)
+    public function getLOD(int $id) :array
     {
         $LOD=$this->select("SELECT * FROM sopNames WHERE id = :value",[[":value", $id]]);
         return $LOD;

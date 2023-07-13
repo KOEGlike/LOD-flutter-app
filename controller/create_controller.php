@@ -1,6 +1,7 @@
 <?php 
 require_once getenv('ROOT_PATH') . "/model/images_model.php";
 require_once getenv('ROOT_PATH') . "/model/LODs_model.php";
+require_once getenv('ROOT_PATH') . "/controller/base_conroller.php";
 
 
 
@@ -15,8 +16,9 @@ class UploadController extends BaseController
 
         $name = $_POST["name"];
         
+        $LODsModel=null;
         try{
-        $LODsModel=new LODsModel;
+        $LODsModel=new LODsModel();
         }
         catch(Exception $e)
         {
@@ -65,7 +67,15 @@ class UploadController extends BaseController
         $id = $_POST["id"];
         $target_dir = "images/$id/";
         $targetFile = $target_dir . basename($uploadedPhoto["name"]);
-        $imagesModel= new ImagesModel
+        
+        $imagesModel=null;
+        try{
+        $imagesModel= new ImagesModel();
+        }
+        catch(Exception $e){
+           $this-> pdoErrorResponse($e);
+        }
+        
         $err = "";
 
         try {
