@@ -7,12 +7,20 @@ require_once getenv('ROOT_PATH') . "/controller/base_conroller.php";
 
 class UploadController extends BaseController
 {
-    function createLOD()
+    public function createLOD()
     {
+        $err=array();
+        
         if ($_POST["name"] == false)
         {
-            $this->sendResponse(400, ["success" => false, "message" => "name variable was not sent"]);
+            array_push($err, "name variable was not sent");
         }
+
+        if($err!=[])
+        {
+            $this->errorResponse(400, $err);
+        }
+
 
         $name = $_POST["name"];
         
@@ -22,7 +30,7 @@ class UploadController extends BaseController
         }
         catch(Exception $e)
         {
-            $this->pdoErrorResponse($e);
+            array_push($err, $e->getMessage());
         }
 
         $lastSopId =null;
@@ -33,7 +41,7 @@ class UploadController extends BaseController
         }
         catch(Exception $e)
         {
-            $this->pdoErrorResponse($e);
+            array_push($err, $e->getMessage());
         }
        
         $targetDir = "images/$lastSopId";
@@ -43,25 +51,29 @@ class UploadController extends BaseController
         }
         catch(Exception $e)
         {
-            $this->sendResponse(500, ["success" => false, ]);
+            array_push($err, $e->getMessage());
+        }
+
+        if($err!=[])
+        {
+            $this->errorResponse(500, $err);
         }
         
-        $this->sendResponse(200, ["success" => true, "id" => $lastSopId]);
+        $this->sendResponse(200, [ "id" => $lastSopId]);
     }
 
-    function  uploadImage()
+    public function  uploadImage()
     {
-        $err400 = "";
-        $err500 = "";
+        $err = array();
         
         
         if ($_FILES["file"] == false)
         {
-            $err400.="Photo was not sent. ";
+            array_push($err, "Photo was not sent. ");
         }
         elseif ($_POST["id"] == false)
         {
-            $err400.="Id variable was not sent. ";
+            array_push($err, "Id variable was not sent. ");
         }
         
         $uploadedPhoto = $_FILES['file'];
@@ -75,21 +87,22 @@ class UploadController extends BaseController
         // Check if file already exists
         if (file_exists($targetFile))
         {
-            $err400 .= " Sorry, file already exists.";
+            array_push($err, "Sorry, file already exists.");
 
         }
 
+        $size=26214400;
         // Check file size
-        if ($uploadedPhoto["size"]> 26214400)
+        if ($uploadedPhoto["size"]>$size )
         {
-            $err400 .= " Sorry, your file is too large.";
+            array_push($err, " Sorry, your file is too large,  its larger than $size bytes.");
 
         }
 
 
-        if ($err400 != "")
+        if ($err != [])
         {
-            $this->sendResponse(500, ["success" => false, "message" => $err400]);
+            $this->sendResponse(400, [ "message" => $err]);
         }
 
         try
@@ -98,27 +111,27 @@ class UploadController extends BaseController
         }
         catch(Exception $e){
 
-           $err500.=$e->getMessage();;
+            array_push($err, $e->getMessage());
         }
         
         try {
             $imagesModel-> insertImage($id,$uploadedPhoto["name"]);
          } catch (Exception $e) {
-             $err500.=$e;
+            array_push($err, $e->getMessage());
          }
 
         if (!move_uploaded_file($uploadedPhoto["tmp_name"], $targetFile))
         {
-            $err500 .= " Sorry, the file couldnt be moved to the final location";
+            array_push($err, "Sorry, the file couldnt be moved to the final location");
         }
 
         
-        elseif($err500 != "")
+        elseif($err != [])
         {
-            $this->sendResponse(500, ["success" => false, "message" => $err500]);
+            $this->sendResponse(500, ["message" => $err]);
         }
         
-            $this->sendResponse(200, ["success" => true]);
+            $this->sendResponse(200);
         
     }
 }

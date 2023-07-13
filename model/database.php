@@ -19,39 +19,43 @@ class DataBase
         }
     }
 
-    public function select($query = "" , $params = [])
+    public function select(string $query = "" ,array $params = []):array
     {
         try {
             $stmt = $this->executeStatement( $query , $params );
             $result = $$stmt->fetchAll(PDO::FETCH_ASSOC);				
-            $stmt->closeCursor()
+            $stmt->closeCursor();
             return $result;
         } catch(Exception $e) {
             throw New Exception( $e->getMessage() );
         }
-        return false;
+        
     }
     
-    public function executeStatement($query = "", $params = [])
-{
-    try {
-        $stmt = $this->conn->prepare($query);
-        if ($stmt === false) {
-            throw new Exception("Unable to prepare statement: " . $query);
-        }
-
-        if ($params) {
-            foreach ($params as $param) {
-                $stmt->bindValue($param[0], $param[1]);
+    public function executeStatement(string $query = "",array $params = []):PDOStatement
+    {
+        try 
+        {
+            $stmt = $this->conn->prepare($query);
+            if ($stmt === false) 
+            {
+                throw new Exception("Unable to prepare statement: " . $query);
             }
-        }
 
-        $stmt->execute();
-        return $stmt;
-    } catch (Exception $e) {
-        throw new Exception($e->getMessage());
-    }
-}
+            if ($params) 
+            {
+                foreach ($params as $param) {
+                    $stmt->bindValue($param[0], $param[1]);
+                }
+            }
+
+            $stmt->execute();
+            return $stmt;
+        } 
+        catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }   
 
 }
 

@@ -5,24 +5,23 @@ require_once getenv('ROOT_PATH') . "/controller/base_conroller.php";
 
 class VoteController extends BaseController
 {
-    function vote(){
-        $err400="";
-        $err500="";
+    public function vote(){
+        $err=array();
 
 
         if($_POST["id"]==false)
         {
-            $err400.="id was not sent";
+            array_push($err, "id was not sent");
         }
 
         if (!($_POST["isyes"] == "true" || $_POST["isyes"] == "false"))
         {
-            $err400.='Nota a valid "vote" variabe option';
+            array_push($err, 'Not a valid "vote" variabe option');
         }
         
-        if($err500!="")
+        if($err!=[])
         {
-            $this->sendResponse(200, ["success" => true, "message"=>$err400]);
+            $this->sendResponse(400, [ "message"=>$err]);
         }
 
         $imagesModel= null;
@@ -33,7 +32,7 @@ class VoteController extends BaseController
         try {
             $imagesModel=  new imagesModel();
         } catch (Exeption $e) {
-            $err500.=$e->getMessage();
+            array_push($err, $e->getMessage());
         }
 
         
@@ -43,15 +42,15 @@ class VoteController extends BaseController
         }
         catch(Exception $e)
         {
-            $err500.=$e->getMessage();
+            array_push($err, $e->getMessage());
         }
 
-        if($err500!="")
+        if($err!=[])
         {
-            $this->sendResponse(200, ["success" => true, "message"=>$err500]);
+            $this->sendResponse(500, [ "message"=>$err]);
         }
 
-        $this->sendResponse(200, ["success" => true]);
+        $this->sendResponse(200);
     }
 }
 ?>

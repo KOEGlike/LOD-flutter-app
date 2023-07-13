@@ -16,30 +16,50 @@ class BaseController
         return $query;
     }
    
-    protected function sendResponse(int $code,array $response,array $headers = array("Content-Type: application/json")):void
+    protected function sendResponse(int $code,array $response=[],array $headers = array("Content-Type: application/json"),bool $success=null):void
     {
 
         http_response_code($code);
-        header_remove('Set-Cookie');
-            if (is_array($headers) && count($headers)) {
-                foreach ($headers as $header) {
-                    header($header);
-                }
+        if($success==null)
+        {
+            switch ($code/100) {
+                case 2:
+                    $success=true;
+                    break;
+                case 4:
+                    $success=false;
+                    break;
+                case 5:
+                    $success=false;
+                    break;
+                default:
+                $success=null;
+                    break;
             }
+        }
+        header_remove('Set-Cookie');
+        if (is_array($headers) && count($headers)) 
+        {
+            foreach ($headers as $header) 
+            {
+                header($header);
+            }
+        }
         header("Access-Control-Allow-Origin:*;", false);
         header("Access-Control-Allow-Methods:GET,PUT,PATCH,POST,DELETE;",false);
+        $response["success"]=$success;
         echo json_encode($response);
         exit;
     }   
 
-    protected function pdoErrorResponse(Exception $e):void
+    protected function errorResponse(int $code,array $err):void
     {
-        json_response(500, ["success" => false, "message" => "faild to query to db:" . $e->getMessage() ]);
+        $this->sendResponse($code, [ "message" => $err ]);
     }
 
     protected function methodNotSupported():void
     {
-        json_response(400, ["success" => false, "message" => "this method is not supportid on this endpoint"]);
+        $this->sendResponse(400, [ "message" => "this method is not supportid on this endpoint"]);
     }
 
 }?>

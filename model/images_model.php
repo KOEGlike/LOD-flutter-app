@@ -3,7 +3,7 @@ require_once getenv('ROOT_PATH') . "/model/database.php";
 
 class ImagesModel extends DataBase
 {
-    public function insertImage(int $originId,string $fileName)
+    public function insertImage(int $originId,string $fileName):void
     {
         try{
             $this->executeStatemant('INSERT INTO kepek (file_Name, origin_id) VALUES (:name, :origin_id )', 
@@ -15,13 +15,13 @@ class ImagesModel extends DataBase
         }
     }
 
-    public function getImages(int $originId)
+    public function getImages(int $originId):array
     {
         $images = $this->select("SELECT * FROM kepek WHERE origin_id = :value",[[":value", $originId]]);
             return $images;
     }
 
-    public function vote(int $id,bool $isYes)
+    public function vote(int $id,bool $isYes):void
     {
         try
             {
