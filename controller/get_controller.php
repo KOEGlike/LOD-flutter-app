@@ -9,21 +9,33 @@ class GetController extends BaseController{
     {
       $params=  $this->getQueryStringParams();
       $err = array();
+      
       if(!(isset($params['id']) && $params['id']))
       {
        array_push($err, "Id querry param was not set. ") ;
       }
+      
       if($err!= "")
       {
         $this-> errorResponse(400, $err);
       }
+      
       $id=$params['id'];
       $imagesModel= null;
+      $lodModel= null;
+      $lod=null;
       $images = null;
       
       try{
         $imagesModel= new ImagesModel();
+      }
+      catch(Exception $e)
+      {
+        array_push($err, $e->getMessage()) ;
+      }
 
+      try{
+        $lodModel= new LodModel();
       }
       catch(Exception $e)
       {
@@ -37,18 +49,21 @@ class GetController extends BaseController{
       {
         array_push($err, $e->getMessage());
       }
+
+      try{
+        $lod=$lodModel->getLOD($id);
+      }
+      catch(Exception $e)
+      {
+        array_push($err, $e->getMessage()) ;
+      }
+
       if($err!= "")
       {
         $this-> errorResponse(500, $err);
       }
 
-      
-        $this-> sendResponse(200);
-      
-
+      $this-> sendResponse(200, ["images" => $images, "name" => $lod[0]["name"]]);
     }
-
-
 }
-
 ?>

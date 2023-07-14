@@ -1,7 +1,7 @@
 <?php 
 require_once getenv('ROOT_PATH') . "/model/database.php";
 
-class LODsModel extends DataBase
+class LodModel extends DataBase
 {
     public function insertNew(string $name) :int
     {

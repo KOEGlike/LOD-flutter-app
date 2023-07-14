@@ -26,7 +26,7 @@ class UploadController extends BaseController
         
         $LODsModel=null;
         try{
-        $LODsModel=new LODsModel();
+        $LODsModel=new LodModel();
         }
         catch(Exception $e)
         {
