@@ -3,7 +3,7 @@ RewriteEngine on
 #RewriteRule ^api$ api.php [QSA,L]
 
 # put the db credentials here
-SetEnv DB_PASS 
+SetEnv DB_PASS
 SetEnv DB_NAME
 SetEnv DB_USER_NAME 
 SetEnv DB_SERVER_NAME

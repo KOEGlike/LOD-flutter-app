@@ -23,8 +23,6 @@ class VoteController extends BaseController
         {
             $this->sendResponse(400, [ "message"=>$err]);
         }
-
-        $imagesModel= null;
         
         $isYes=$_POST["isyes"];
         $id = $_POST['id'];

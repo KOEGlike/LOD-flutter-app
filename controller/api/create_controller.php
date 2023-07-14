@@ -1,7 +1,8 @@
 <?php 
-require_once getenv('ROOT_PATH') . "/model/images_model.php";
-require_once getenv('ROOT_PATH') . "/model/LODs_model.php";
-require_once getenv('ROOT_PATH') . "/controller/base_conroller.php";
+require_once getenv('ROOT_PATH') . "/model/api/images_model.php";
+require_once getenv('ROOT_PATH') . "/modelapi//lod_model.php";
+require_once getenv('ROOT_PATH') . "/controller/api/base_conroller.php";
+require_once getenv('ROOT_PATH') . "/controller/file/base_conroller.php";
 
 
 
@@ -21,23 +22,29 @@ class UploadController extends BaseController
             $this->errorResponse(400, $err);
         }
 
-
         $name = $_POST["name"];
         
-        $LODsModel=null;
-        try{
-        $LODsModel=new LodModel();
+        try
+        {
+        $lodModel=new LodModel();
         }
         catch(Exception $e)
         {
             array_push($err, $e->getMessage());
         }
 
-        $lastSopId =null;
+        try
+        {
+            $fileController=new BaseFileController();
+        }
+        catch(Exception $e)
+        {
+            array_push($err, $e->getMessage());
+        }
         
         try
         {
-            $lastSopId = $LODsModel->insertNew($name);
+            $lastSopId = $lodModel->insertNew($name);
         }
         catch(Exception $e)
         {
@@ -46,8 +53,10 @@ class UploadController extends BaseController
        
         $targetDir = "images/$lastSopId";
         
-        try{
-        mkdir($targetDir);
+        try
+        {
+
+            $fileController->createFolder($targetDir);
         }
         catch(Exception $e)
         {
@@ -79,25 +88,22 @@ class UploadController extends BaseController
         $uploadedPhoto = $_FILES['file'];
         $id = $_POST["id"];
         
-        $target_dir = "images/$id/";
-        $targetFile = $target_dir . basename($uploadedPhoto["name"]);
+        $targetDir = "images/$id/";
+        $targetFile = $targetDir . basename($uploadedPhoto["name"]);
         
-        $imagesModel=null;
-
-        // Check if file already exists
-        if (file_exists($targetFile))
+        
+        //no reason for try catch rght now, thsi shoul be in the 500 error section, i will implemenitit in the future
+        try
         {
-            array_push($err, "Sorry, file already exists.");
-
+            $fileController=new BaseFileController();
+        }
+        catch(Exception $e)
+        {
+            array_push($err, $e->getMessage());
         }
 
-        $size=26214400;
-        // Check file size
-        if ($uploadedPhoto["size"]>$size )
-        {
-            array_push($err, " Sorry, your file is too large,  its larger than $size bytes.");
-
-        }
+        //checks if the file has errors and if it has than it merges those errors with the existing errors
+        array_merge($err, $fileController->checkFile($uploadedPhoto,$targetFile));
 
 
         if ($err != [])
@@ -114,24 +120,31 @@ class UploadController extends BaseController
             array_push($err, $e->getMessage());
         }
         
-        try {
-            $imagesModel-> insertImage($id,$uploadedPhoto["name"]);
-         } catch (Exception $e) {
-            array_push($err, $e->getMessage());
-         }
-
-        if (!move_uploaded_file($uploadedPhoto["tmp_name"], $targetFile))
+        try 
         {
-            array_push($err, "Sorry, the file couldnt be moved to the final location");
+            $imagesModel-> insertImage($id,$uploadedPhoto["name"]);
+        } 
+        catch (Exception $e) 
+        {
+            array_push($err, $e->getMessage());
+        }
+
+        try 
+        {
+            $fileController->moveFile($uploadedPhoto,$targetFile);
+        } 
+        catch (Exception $e) 
+        {
+            array_push($err, $e->getMessage());
         }
 
         
-        elseif($err != [])
+        if($err != [])
         {
             $this->sendResponse(500, ["message" => $err]);
         }
         
-            $this->sendResponse(200);
+        $this->sendResponse(200);
         
     }
 }

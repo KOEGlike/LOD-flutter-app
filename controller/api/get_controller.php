@@ -21,8 +21,6 @@ class GetController extends BaseController{
       }
       
       $id=$params['id'];
-      $imagesModel= null;
-      $lodModel= null;
       $lod=null;
       $images = null;
       
