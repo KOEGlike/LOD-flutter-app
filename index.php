@@ -7,5 +7,5 @@ $uri = explode( '/', $uri );
 
 
 
-if($uri[0]==) 
+ 
 ?>

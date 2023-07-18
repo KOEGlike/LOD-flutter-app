@@ -5,7 +5,7 @@ require_once getenv('ROOT_PATH') . "/controller/base_conroller.php";
 
 class GetController extends BaseController{
 
-    public  function getLOD():array
+    public  function getLOD():void
     {
       $params=  $this->getQueryStringParams();
       $err = array();
