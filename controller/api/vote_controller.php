@@ -6,6 +6,11 @@ require_once getenv('ROOT_PATH') . "/controller/base_conroller.php";
 class VoteController extends BaseController
 {
     public function vote(){
+        if($_SERVER["REQUEST_METHOD"] !== "POST")
+        {
+            $this->methodNotSupported();
+        }
+        
         $err=array();
 
 
@@ -24,7 +29,7 @@ class VoteController extends BaseController
             $this->sendResponse(400, [ "message"=>$err]);
         }
         
-        $isYes=$_POST["isyes"];
+        $isYes=bool($_POST["isyes"]);
         $id = $_POST['id'];
         
         try {
@@ -32,8 +37,6 @@ class VoteController extends BaseController
         } catch (Exeption $e) {
             array_push($err, $e->getMessage());
         }
-
-        
         try
         {
             $imagesModel->vote($id, $isYes);

@@ -10,20 +10,13 @@ class UploadController extends BaseController
 {
     public function createLOD()
     {
+        if($_SERVER["REQUEST_METHOD"] !== "POST")
+        {
+            $this->methodNotSupported();
+        }
+        
         $err=array();
-        
-        if ($_POST["name"] == false)
-        {
-            array_push($err, "name variable was not sent");
-        }
 
-        if($err!=[])
-        {
-            $this->errorResponse(400, $err);
-        }
-
-        $name = $_POST["name"];
-        
         try
         {
         $lodModel=new LodModel();
@@ -41,6 +34,25 @@ class UploadController extends BaseController
         {
             array_push($err, $e->getMessage());
         }
+
+        if($err!=[])
+        {
+            $this->errorResponse(500, $err);
+        }
+        
+        if ($_POST["name"] == false)
+        {
+            array_push($err, "name variable was not sent");
+        }
+
+        if($err!=[])
+        {
+            $this->errorResponse(400, $err);
+        }
+
+        $name = $_POST["name"];
+        
+        
         
         try
         {
@@ -73,8 +85,36 @@ class UploadController extends BaseController
 
     public function  uploadImage()
     {
+        if($_SERVER["REQUEST_METHOD"] !== "POST")
+        {
+            $this->methodNotSupported();
+        }
+        
         $err = array();
         
+        try
+        {
+        $imagesModel= new ImagesModel();
+        }
+        catch(Exception $e){
+
+            array_push($err, $e->getMessage());
+        }
+
+        //no reason for try catch rght now, thsi shoul be in the 500 error section, i will implemenitit in the future
+        try
+        {
+            $fileController=new BaseFileController();
+        }
+        catch(Exception $e)
+        {
+            array_push($err, $e->getMessage());
+        }
+        
+        if ($err != [])
+        {
+            $this->sendResponse(400, [ "message" => $err]);
+        }
         
         if ($_FILES["file"] == false)
         {
@@ -92,15 +132,7 @@ class UploadController extends BaseController
         $targetFile = $targetDir . basename($uploadedPhoto["name"]);
         
         
-        //no reason for try catch rght now, thsi shoul be in the 500 error section, i will implemenitit in the future
-        try
-        {
-            $fileController=new BaseFileController();
-        }
-        catch(Exception $e)
-        {
-            array_push($err, $e->getMessage());
-        }
+        
 
         //checks if the file has errors and if it has than it merges those errors with the existing errors
         array_merge($err, $fileController->checkFile($uploadedPhoto,$targetFile));
@@ -109,15 +141,6 @@ class UploadController extends BaseController
         if ($err != [])
         {
             $this->sendResponse(400, [ "message" => $err]);
-        }
-
-        try
-        {
-        $imagesModel= new ImagesModel();
-        }
-        catch(Exception $e){
-
-            array_push($err, $e->getMessage());
         }
         
         try 

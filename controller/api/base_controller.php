@@ -57,9 +57,19 @@ class BaseController
         $this->sendResponse($code, [ "message" => $err ]);
     }
 
-    protected function methodNotSupported():void
+    public function methodNotSupported():void
     {
-        $this->sendResponse(400, [ "message" => "this method is not supportid on this endpoint"]);
+        $this->sendResponse(400, [ "message" => "this method is not supported on this endpoint"]);
+    }
+
+    protected function wrongMethod():void
+    {
+        $this->sendResponse(500, [ "message" => "this function was atatched to the wrong method by the programmer"]);
+    }
+
+    public function thisEndpointDoseNotExist():void
+    {
+        $this->sendResponse(400, [ "message" => "this endpoint does not exist"]);
     }
 
 }?>

@@ -7,6 +7,11 @@ class GetController extends BaseController{
 
     public  function getLOD():void
     {
+      if($_SERVER["REQUEST_METHOD"] !== "GET")
+        {
+            $this->methodNotSupported();
+        }
+
       $params=  $this->getQueryStringParams();
       $err = array();
       

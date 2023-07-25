@@ -38,7 +38,7 @@ class BaseFileController
 
     public function moveFile(array $file, string $targetFile):void
     {
-        $err = array();
+        
 
         if (!move_uploaded_file($file["tmp_name"], $targetFile))
         {
