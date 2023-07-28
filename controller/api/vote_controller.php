@@ -29,12 +29,12 @@ class VoteController extends BaseController
             $this->sendResponse(400, [ "message"=>$err]);
         }
         
-        $isYes=bool($_POST["isyes"]);
+        $isYes=$_POST["isyes"];
         $id = $_POST['id'];
         
         try {
             $imagesModel=  new imagesModel();
-        } catch (Exeption $e) {
+        } catch (Exception $e) {
             array_push($err, $e->getMessage());
         }
         try

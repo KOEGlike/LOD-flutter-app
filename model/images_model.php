@@ -6,7 +6,7 @@ class ImagesModel extends DataBase
     public function insertImage(int $originId,string $fileName):void
     {
         try{
-            $this->executeStatemant('INSERT INTO kepek (file_Name, origin_id) VALUES (:name, :origin_id )', 
+            $this->executeStatement ('INSERT INTO kepek (file_Name, origin_id) VALUES (:name, :origin_id )', 
         [[':name',$fileName],[':origin_id',$originId]]);
         }
         catch(Exception $e)
@@ -27,11 +27,11 @@ class ImagesModel extends DataBase
             {
                 if ($isYes == true)
                 {
-                    $this->executeStatemant("UPDATE kepek SET votes = votes+1, votes_amount = votes_amount + 1 WHERE id = :id",[[":id", $id]]);
+                    $this->executeStatement("UPDATE kepek SET votes = votes+1, votes_amount = votes_amount + 1 WHERE id = :id",[[":id", $id]]);
                 }
                 else
                 {
-                    $this->executeStatemant("UPDATE kepek SET votes = votes-1, votes_amount = votes_amount + 1 WHERE id = :id",[[":id", $id]]);
+                    $this->executeStatement("UPDATE kepek SET votes = votes-1, votes_amount = votes_amount + 1 WHERE id = :id",[[":id", $id]]);
                 }
                 
             }

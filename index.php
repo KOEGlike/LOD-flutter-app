@@ -1,12 +1,12 @@
 <?php 
 require __DIR__ . "/inc/bootstrap.php";
 
-$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$uri = str_replace("/".explode( 'public_html/', __DIR__)[1]."/", "", $uri);
-$uri = explode( '/', $uri );
-$uri= array_shift($uri);
 
-$deepnes = int(0);
+$uri = str_replace("/".explode( 'public_html/', __DIR__)[1]."/", "", parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+$uri = explode( '/', $uri );
+//$uri= array_shift($uri);
+
+$deepnes = 0;
 
 $baseController=new BaseController();
 
