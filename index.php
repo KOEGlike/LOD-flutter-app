@@ -1,67 +1,30 @@
 <?php 
-require_once( "inc/bootstrap.php");
-
-$request_uri = $_SERVER['REQUEST_URI'];
-$uri = str_replace("/".explode( 'public_html/', __DIR__)[1]."/", "", parse_url($request_uri, PHP_URL_PATH));
-$uri = explode( '/', $uri );
-//$uri= array_shift($uri);
-
-$deepnes = 0;
+require_once("inc/bootstrap.php");
 
 $baseController=new BaseController();
+$uri=$baseController->getUriSegments();
 
-if($uri[$deepnes]=="upload")
+if($uri[0]=="upload"&&$uri[1]=="create"&&count($uri)==2)
 {
-    $deepnes++;
     $createControler= new UploadController();
-
-    if($uri[$deepnes+1]!=null)
-    {
-        $createControler->thisEndpointDoseNotExist();
-    }
-
-    if($uri[1]=="create")
-    {
-        $deepnes++;
-        $createControler->createLOD();
-    }
-    elseif($uri[1]="upload")
-    {   
-        $deepnes++;
-        $createControler->uploadImage();
-    }
-    else{
-        $createControler->thisEndpointDoseNotExist();
-    }
+    $createControler->createLOD();
 }
-elseif($uri[0]=="get")
+elseif($uri[0]=="upload"&&$uri[1]="upload"&&count($uri)==2)
+{   
+    $createControler= new UploadController();
+    $createControler->uploadImage();
+}
+elseif($uri[0]=="get"&&count($uri)==1)
 {
-    $deepnes++;
     $getControler= new GetController();
-
-    if($uri[$deepnes+1]!=null)
-    {
-        $getControler->thisEndpointDoseNotExist();
-    }
     $getControler->getLOD();
-
-
 }
-elseif($uri[0]=="vote")
+elseif($uri[0]=="vote"&&count($uri)==1)
 {
-    $deepnes++;
     $voteControler= new VoteController();
-
-    if($uri[$deepnes+1]!=null)
-    {
-        $voteControler->thisEndpointDoseNotExist();
-    }
-
     $voteControler->vote();
-
 }
 else{
 $baseController->thisEndpointDoseNotExist();
 }
-
 ?>

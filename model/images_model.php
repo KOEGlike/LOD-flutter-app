@@ -1,5 +1,7 @@
 <?php 
-require_once  "./database.php";
+$dir=getenv("DOCUMENT_ROOT");
+$dir='G:\haacer man\flutter\first_test';//delete
+require_once  $dir."/model//database.php";
 
 class ImagesModel extends DataBase
 {

@@ -1,7 +1,10 @@
 <?php 
-require_once  "../../model/images_model.php";
-require_once  "../../model/lod_model.php";
-require_once  "./base_conroller.php";
+$dir=getenv("DOCUMENT_ROOT");
+$dir='G:\haacer man\flutter\first_test';//delete
+
+require_once  $dir."/model/images_model.php";
+require_once  $dir."/model/lod_model.php";
+require_once  $dir."/controller/api/base_controller.php";
 
 class GetController extends BaseController{
 
@@ -12,7 +15,7 @@ class GetController extends BaseController{
             $this->methodNotSupported();
         }
 
-      $params=  $this->getQueryStringParams();
+      $params=  $_GET;
       $err = array();
       
       if(!(isset($params['id']) && $params['id']))
@@ -20,7 +23,7 @@ class GetController extends BaseController{
        array_push($err, "Id querry param was not set. ") ;
       }
       
-      if($err!= "")
+      if($err!= [])
       {
         $this-> errorResponse(400, $err);
       }
@@ -28,6 +31,7 @@ class GetController extends BaseController{
       $id=$params['id'];
       $lod=null;
       $images = null;
+      $imagesModel=null;
       
       try{
         $imagesModel= new ImagesModel();

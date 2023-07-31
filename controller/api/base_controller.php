@@ -1,18 +1,15 @@
 <?php
 class BaseController
 {
-    protected function getUriSegments():string
+    public function getUriSegments():array
     {
         $uri = parse_url ($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        //$uri = str_replace("/".explode( 'public_html/', __DIR__)[1]."/", "", parse_url($uri, PHP_URL_PATH)); //delete coment
         $uri = explode( '/', $uri );
+        array_shift($uri);
         return $uri;
     }
     
-    protected function getQueryStringParams():array
-    {
-        parse_str($_SERVER['QUERY_STRING'], $query);
-        return $query;
-    }
    
     protected function sendResponse(int $code,array $response=[],array $headers = array("Content-Type: application/json"),bool $success=null):void
     {
@@ -54,7 +51,10 @@ class BaseController
     {
         $this->sendResponse($code, [ "message" => $err ]);
     }
-
+    protected function exceptionResponse(int $code,array $err):void
+    {
+        $this->sendResponse($code, [ "message" => $err ]);
+    }
     public function methodNotSupported():void
     {
         $this->sendResponse(400, [ "message" => "this method is not supported on this endpoint"]);

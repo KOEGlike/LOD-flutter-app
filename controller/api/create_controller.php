@@ -1,8 +1,11 @@
 <?php 
-require_once  "../../model/images_model.php";
-require_once  "../../model/lod_model.php";
-require_once  "./base_conroller.php";
-require_once  "../file/base_conroller.php";
+$dir=getenv("DOCUMENT_ROOT");
+$dir='G:\haacer man\flutter\first_test';//delete
+
+require_once $dir. "/model/images_model.php";
+require_once $dir."/model/lod_model.php";
+require_once $dir."/controller/api/base_controller.php";
+require_once $dir."/controller/file/base_controller.php";
 
 
 
