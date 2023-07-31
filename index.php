@@ -1,7 +1,6 @@
 <?php 
 require __DIR__ . "/inc/bootstrap.php";
 
-
 $uri = str_replace("/".explode( 'public_html/', __DIR__)[1]."/", "", parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 $uri = explode( '/', $uri );
 //$uri= array_shift($uri);
@@ -64,8 +63,4 @@ else{
 $baseController->thisEndpointDoseNotExist();
 }
 
-
-
-
- 
 ?>
