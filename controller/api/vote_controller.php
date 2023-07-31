@@ -1,7 +1,6 @@
 <?php 
-require_once getenv('ROOT_PATH') . "/model/images_model.php";
-require_once getenv('ROOT_PATH') . "/controller/base_conroller.php";
-
+require_once  "../../model/images_model.php";
+require_once  "base_conroller.php";
 
 class VoteController extends BaseController
 {

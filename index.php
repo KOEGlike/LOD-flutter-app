@@ -1,7 +1,13 @@
 <?php 
-require __DIR__ . "/inc/bootstrap.php";
+require_once( "inc/bootstrap.php");
 
-$uri = str_replace("/".explode( 'public_html/', __DIR__)[1]."/", "", parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+$request_uri = $_SERVER['REQUEST_URI'];
+
+
+
+
+
+$uri = str_replace("/".explode( 'public_html/', __DIR__)[1]."/", "", parse_url($request_uri, PHP_URL_PATH));
 $uri = explode( '/', $uri );
 //$uri= array_shift($uri);
 

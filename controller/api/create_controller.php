@@ -1,8 +1,8 @@
 <?php 
-require_once getenv('ROOT_PATH') . "/model/api/images_model.php";
-require_once getenv('ROOT_PATH') . "/modelapi//lod_model.php";
-require_once getenv('ROOT_PATH') . "/controller/api/base_conroller.php";
-require_once getenv('ROOT_PATH') . "/controller/file/base_conroller.php";
+require_once  "../../model/images_model.php";
+require_once  "../../model/lod_model.php";
+require_once  "base_conroller.php";
+require_once  "../file/base_conroller.php";
 
 
 
