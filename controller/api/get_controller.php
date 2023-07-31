@@ -1,7 +1,7 @@
 <?php 
 require_once  "../../model/images_model.php";
 require_once  "../../model/lod_model.php";
-require_once  "base_conroller.php";
+require_once  "./base_conroller.php";
 
 class GetController extends BaseController{
 

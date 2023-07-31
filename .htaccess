@@ -1,18 +1,14 @@
 Header set Access-Control-Allow-Origin "*"
 RewriteEngine On
-RewriteBase /
+RewriteBase /lod/api/
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-RewriteRule ^lod/api/(.*)$ lod/api/index.php/$1 [QSA,L]
+RewriteRule ^(.*)$ index.php/$1 [QSA,L]
 
 # put the db credentials here
 SetEnv DB_PASS 
-
 SetEnv DB_NAME 
 SetEnv DB_USER_NAME 
 SetEnv DB_SERVER_NAME 
-
-# put the path where you put the code
-SetEnv ROOT_PATH  

@@ -1,5 +1,5 @@
 <?php 
-require_once "database.php";
+require_once "./database.php";
 
 class LodModel extends DataBase
 {
