@@ -18,7 +18,12 @@ class ImagesModel extends DataBase
 
     public function getImages(int $originId):array
     {
-        $images = $this->select("SELECT * FROM kepek WHERE origin_id = :value",[[":value", $originId]]);
+        
+        try {
+            $images = $this->select("SELECT * FROM kepek WHERE origin_id = :value",[[":value", $originId]]);
+        } catch (Exception $e) {
+            throw $e;
+        }
             return $images;
     }
 

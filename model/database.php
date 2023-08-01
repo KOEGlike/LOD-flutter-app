@@ -23,7 +23,7 @@ class DataBase
     {
         try {
             $stmt = $this->executeStatement( $query , $params );
-            $result = $$stmt->fetchAll(PDO::FETCH_ASSOC);				
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);				
             $stmt->closeCursor();
             return $result;
         } catch(Exception $e) {

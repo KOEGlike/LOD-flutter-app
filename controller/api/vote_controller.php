@@ -19,7 +19,7 @@ class VoteController extends BaseController
         {
             array_push($err, "id was not sent");
         }
-        elseif(!is_int($_POST["id"])){
+        elseif(!is_numeric($_POST["id"])){
             array_push($err, "id is not intager");
         }
 
