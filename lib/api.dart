@@ -11,8 +11,8 @@ import 'dart:convert';
 
 Future<Map<String, dynamic>?> get(int? id) async {
   if (id == null) return null;
-  Uri url = Uri.https(
-      'koeg.000webhostapp.com', 'sop/api.php/get', {"id": id.toString()});
+  Uri url =
+      Uri.https('koeg.000webhostapp.com', 'lod/api/get', {"id": id.toString()});
 
   late http.Response response;
   try {
@@ -29,7 +29,7 @@ Future<Map<String, dynamic>?> get(int? id) async {
 }
 
 Future<void> vote(int id, bool isyes, List response) async {
-  Uri url = Uri.http('koeg.000webhostapp.com', 'sop/api.php/vote');
+  Uri url = Uri.http('koeg.000webhostapp.com', 'lod/api/vote');
   http.MultipartRequest request = http.MultipartRequest("POST", url);
   request.fields["isyes"] = isyes.toString();
   request.fields["id"] = id.toString();
@@ -59,7 +59,7 @@ Future<void> upload(
   int id,
   String name,
 ) async {
-  Uri url = Uri.http('koeg.000webhostapp.com', 'sop/api.php/upload/image');
+  Uri url = Uri.http('koeg.000webhostapp.com', 'lod/api/upload/image');
 
   for (int i = 0; i < images.length; i++) {
     http.MultipartRequest request = http.MultipartRequest("POST", url);
@@ -95,7 +95,7 @@ Future<void> upload(
 }
 
 Future<int> create(String name) async {
-  Uri url = Uri.http('koeg.000webhostapp.com', 'sop/api.php/upload/create');
+  Uri url = Uri.http('koeg.000webhostapp.com', 'lod/api/upload/create');
   http.MultipartRequest request = http.MultipartRequest("POST", url);
   request.fields["name"] = name;
   http.StreamedResponse streamedResponse = await request.send();
@@ -104,6 +104,6 @@ Future<int> create(String name) async {
   if (response.statusCode != 200) {
     throw ErrorType(jsonDecode(response.body)["message"]);
   } else {
-    return int.parse(jsonDecode(response.body)["id"]);
+    return jsonDecode(response.body)["id"];
   }
 }

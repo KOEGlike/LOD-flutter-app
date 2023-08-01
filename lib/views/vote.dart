@@ -99,7 +99,7 @@ class _VoteState extends State<Vote> {
                         return ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: Image.network(
-                            'http://koeg.000webhostapp.com/sop/images/$id/${images[index]['file_Name']}',
+                            'http://koeg.000webhostapp.com/lod/api/images/$id/${images[index]['file_Name']}',
                             fit: BoxFit.contain,
                             alignment: Alignment.topCenter,
                             loadingBuilder: (context, child, loadingProgress) {

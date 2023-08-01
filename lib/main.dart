@@ -53,11 +53,11 @@ final _router = GoRouter(
       parentNavigatorKey: _rootNavigatorKey,
       path: '/vote',
       pageBuilder: (context, state) {
-        debugPrint(state.queryParameters['id']);
+        debugPrint(state.uri.queryParameters['id']);
         return NoTransitionPage(
           key: UniqueKey(),
           child: Vote(
-            id: int.tryParse(state.queryParameters['id'] ?? ''),
+            id: int.tryParse(state.uri.queryParameters['id'] ?? ''),
           ),
         );
       },
@@ -69,7 +69,7 @@ final _router = GoRouter(
         return NoTransitionPage(
           key: UniqueKey(),
           child: ResultsPage(
-            id: int.tryParse(state.queryParameters['id'] ?? ''),
+            id: int.tryParse(state.uri.queryParameters['id'] ?? ''),
           ),
         );
       },
@@ -80,7 +80,7 @@ final _router = GoRouter(
         return NoTransitionPage(
           key: UniqueKey(),
           child: Links(
-            id: int.tryParse(state.queryParameters['id'] ?? ''),
+            id: int.tryParse(state.uri.queryParameters['id'] ?? ''),
           ),
         );
       },

@@ -119,7 +119,7 @@ class _ImageResultsState extends State<ImageResults> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
               child: Image.network(
-                'http://koeg.000webhostapp.com/sop/images/${widget.originId}/${widget.fileName}',
+                'http://koeg.000webhostapp.com/lod/api/images/${widget.originId}/${widget.fileName}',
 
                 fit: BoxFit.cover,
                 width: MediaQuery.of(context).size.width *

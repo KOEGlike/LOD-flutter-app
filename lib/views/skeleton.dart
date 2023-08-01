@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../custom_error.dart';
 
 class NavIcon {
   final Icon icon;
@@ -16,7 +15,7 @@ class NavIcon {
 }
 
 int _calculateSelectedIndex(BuildContext context, List<NavIcon> navIcons) {
-  final String location = GoRouterState.of(context).location;
+  final String location = GoRouterState.of(context).uri.toString();
   debugPrint(location);
 
   for (int i = 0; i < navIcons.length; i++) {
