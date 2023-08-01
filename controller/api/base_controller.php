@@ -4,7 +4,7 @@ class BaseController
     public function getUriSegments():array
     {
         $uri = parse_url ($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        //$uri = str_replace("/".explode( 'public_html/', __DIR__)[1]."/", "", parse_url($uri, PHP_URL_PATH)); //delete coment
+        $uri = str_replace("/".explode( 'public_html/', __DIR__)[1]."/", "", parse_url($uri, PHP_URL_PATH)); 
         $uri = explode( '/', $uri );
         array_shift($uri);
         return $uri;
@@ -47,14 +47,11 @@ class BaseController
         exit;
     }   
 
-    protected function errorResponse(int $code,array $err):void
+    protected function errorResponse(int $code,string $err):void
     {
         $this->sendResponse($code, [ "message" => $err ]);
     }
-    protected function exceptionResponse(int $code,array $err):void
-    {
-        $this->sendResponse($code, [ "message" => $err ]);
-    }
+    
     public function methodNotSupported():void
     {
         $this->sendResponse(400, [ "message" => "this method is not supported on this endpoint"]);

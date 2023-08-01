@@ -1,6 +1,5 @@
 <?php 
 $dir=getenv("DOCUMENT_ROOT");
-$dir='G:\haacer man\flutter\first_test';//delete
 
 require_once  $dir."/model/images_model.php";
 require_once  $dir."/model/lod_model.php";
@@ -15,30 +14,36 @@ class GetController extends BaseController{
             $this->methodNotSupported();
         }
 
-      $params=  $_GET;
+      $params= $_GET;
       $err = array();
       
-      if(!(isset($params['id']) && $params['id']))
+      if(!(isset($params['id']) || $params['id']))
       {
-       array_push($err, "Id querry param was not set. ") ;
+       array_push($err, "Id querry param was not set.") ;
+      }
+      elseif(is_int($params['id']))
+      {
+        array_push($err, "Id querry param is not integer.") ;
       }
       
       if($err!= [])
       {
-        $this-> errorResponse(400, $err);
+        $this-> sendResponse(400, ["message" => implode(", ", $err)]);
       }
-      
+
       $id=$params['id'];
       $lod=null;
       $images = null;
       $imagesModel=null;
+      $lodModel=null;
       
       try{
         $imagesModel= new ImagesModel();
       }
       catch(Exception $e)
       {
-        array_push($err, $e->getMessage()) ;
+        $this->sendResponse(500, ["message" => $e->getMessage()]);
+        
       }
 
       try{
@@ -46,15 +51,15 @@ class GetController extends BaseController{
       }
       catch(Exception $e)
       {
-        array_push($err, $e->getMessage()) ;
+        $this->sendResponse(500, ["message" => $e->getMessage()]);
       }
       
       try{
-        $images=  $imagesModel->getImages($id);
+        $images= $imagesModel->getImages($id);
       }
       catch(Exception $e)
       {
-        array_push($err, $e->getMessage());
+        $this->sendResponse(500, ["message" => $e->getMessage()]);
       }
 
       try{
@@ -62,13 +67,10 @@ class GetController extends BaseController{
       }
       catch(Exception $e)
       {
-        array_push($err, $e->getMessage()) ;
+        $this->sendResponse(500, ["message" => $e->getMessage()]);;
       }
 
-      if($err!= "")
-      {
-        $this-> errorResponse(500, $err);
-      }
+      
 
       $this-> sendResponse(200, ["images" => $images, "name" => $lod[0]["name"]]);
     }

@@ -1,6 +1,5 @@
 <?php 
 $dir=getenv("DOCUMENT_ROOT");
-$dir='G:\haacer man\flutter\first_test';//delete
 
 require_once $dir. "/model/images_model.php";
 require_once $dir."/model/lod_model.php";
@@ -13,6 +12,7 @@ class UploadController extends BaseController
 {
     public function createLOD()
     {
+        $dir=getenv("DOCUMENT_ROOT");
         if($_SERVER["REQUEST_METHOD"] !== "POST")
         {
             $this->methodNotSupported();
@@ -26,7 +26,7 @@ class UploadController extends BaseController
         }
         catch(Exception $e)
         {
-            array_push($err, $e->getMessage());
+            $this->sendResponse(500, ["message" => $e->getMessage()]);
         }
 
         try
@@ -35,22 +35,19 @@ class UploadController extends BaseController
         }
         catch(Exception $e)
         {
-            array_push($err, $e->getMessage());
+            $this->sendResponse(500, ["message" => $e->getMessage()]);
         }
 
-        if($err!=[])
-        {
-            $this->errorResponse(500, $err);
-        }
         
-        if ($_POST["name"] == false)
+        
+        if (!$_POST["name"] ||!isset($_POST["name"]))
         {
-            array_push($err, "name variable was not sent");
+            array_push($err, "Name variable was not sent");
         }
 
         if($err!=[])
         {
-            $this->errorResponse(400, $err);
+            $this->sendResponse(400, ["message" => implode(", ",$err)]);;
         }
 
         $name = $_POST["name"];
@@ -63,31 +60,29 @@ class UploadController extends BaseController
         }
         catch(Exception $e)
         {
-            array_push($err, $e->getMessage());
+            $this->sendResponse(500, ["message" => $e->getMessage()]);
         }
        
-        $targetDir = "images/$lastSopId";
+        $targetDir = $this->$dir."/images/$lastSopId";
         
         try
         {
-
             $fileController->createFolder($targetDir);
         }
         catch(Exception $e)
         {
-            array_push($err, $e->getMessage());
+            $this->sendResponse(500, ["message" => $e->getMessage()]);
         }
 
-        if($err!=[])
-        {
-            $this->errorResponse(500, $err);
-        }
+        
         
         $this->sendResponse(200, [ "id" => $lastSopId]);
     }
 
     public function  uploadImage()
     {
+        $dir=getenv("DOCUMENT_ROOT");
+
         if($_SERVER["REQUEST_METHOD"] !== "POST")
         {
             $this->methodNotSupported();
@@ -95,13 +90,37 @@ class UploadController extends BaseController
         
         $err = array();
         
+        if (!$_FILES["file"] ||!isset($_FILES["file"]))
+        {
+            array_push($err, "Photo was not sent. ");
+        }
+        if (!$_POST["id"] ||!isset($_POST["id"]))
+        {
+            array_push($err, "Id variable was not sent. ");
+        }
+        elseif(!is_int($_POST["id"]))
+        {
+            array_push($err, "Id variable is not an integer. ");
+        }
+        
+        $uploadedPhoto = $_FILES['file'];
+        $id = $_POST["id"];
+        
+        $targetDir = $dir."/images/$id/";
+        $targetFile = $targetDir . basename($uploadedPhoto["name"]);
+        
+        if ($err != [])
+        {
+            $this->sendResponse(400, [ "message" => implode(", ",$err)]);
+        }
+
         try
         {
         $imagesModel= new ImagesModel();
         }
         catch(Exception $e){
 
-            array_push($err, $e->getMessage());
+            $this->sendResponse(500, ["message" => $e->getMessage()]);
         }
 
         //no reason for try catch rght now, thsi shoul be in the 500 error section, i will implemenitit in the future
@@ -111,48 +130,12 @@ class UploadController extends BaseController
         }
         catch(Exception $e)
         {
-            array_push($err, $e->getMessage());
+            $this->sendResponse(500, ["message" => $e->getMessage()]);
         }
         
-        if ($err != [])
+        if($fileController->checkFile($uploadedPhoto,$targetFile)!=[])
         {
-            $this->sendResponse(400, [ "message" => $err]);
-        }
-        
-        if ($_FILES["file"] == false)
-        {
-            array_push($err, "Photo was not sent. ");
-        }
-        elseif ($_POST["id"] == false)
-        {
-            array_push($err, "Id variable was not sent. ");
-        }
-        
-        $uploadedPhoto = $_FILES['file'];
-        $id = $_POST["id"];
-        
-        $targetDir = "images/$id/";
-        $targetFile = $targetDir . basename($uploadedPhoto["name"]);
-        
-        
-        
-
-        //checks if the file has errors and if it has than it merges those errors with the existing errors
-        array_merge($err, $fileController->checkFile($uploadedPhoto,$targetFile));
-
-
-        if ($err != [])
-        {
-            $this->sendResponse(400, [ "message" => $err]);
-        }
-        
-        try 
-        {
-            $imagesModel-> insertImage($id,$uploadedPhoto["name"]);
-        } 
-        catch (Exception $e) 
-        {
-            array_push($err, $e->getMessage());
+            $this->sendResponse(400, ["message" => implode(", ",$fileController->checkFile($uploadedPhoto,$targetFile))]);
         }
 
         try 
@@ -161,14 +144,20 @@ class UploadController extends BaseController
         } 
         catch (Exception $e) 
         {
-            array_push($err, $e->getMessage());
+            $this->sendResponse(500, ["message" => $e->getMessage()]);
+        }
+        
+        try 
+        {
+            $imagesModel-> insertImage($id,$uploadedPhoto["name"]);
+        } 
+        catch (Exception $e) 
+        {
+            $this->sendResponse(500, ["message" => $e->getMessage()]);
         }
 
         
-        if($err != [])
-        {
-            $this->sendResponse(500, ["message" => $err]);
-        }
+
         
         $this->sendResponse(200);
         

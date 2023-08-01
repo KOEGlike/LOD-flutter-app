@@ -1,6 +1,5 @@
 <?php
 $dir=getenv("DOCUMENT_ROOT");
-$dir='G:\haacer man\flutter\first_test'; //delete
 
 // include the base controller file 
 require_once  $dir."/controller/api/base_controller.php";

@@ -11,13 +11,6 @@ class DataBase
         $username= getenv('DB_USER_NAME');
         $password=getenv('DB_PASS');
 
-        $servername= 'localhost';//delete
-        $dbname = 'id20173908_sopdb';//delete
-        $username= 'id20173908_sopuser';//delete
-        $password='fkrj(N@8ZBOZ\>_y';//delete
-
-        
-        
         try {
             $this->conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

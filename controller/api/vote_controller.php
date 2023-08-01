@@ -1,6 +1,5 @@
 <?php 
 $dir=getenv("DOCUMENT_ROOT");
-$dir='G:\haacer man\flutter\first_test';//delete
 
 require_once  $dir."/model/images_model.php";
 require_once  $dir."/controller/api/base_controller.php";
@@ -16,19 +15,26 @@ class VoteController extends BaseController
         $err=array();
 
 
-        if($_POST["id"]==false)
+        if(!$_POST["id"]||!isset($_POST["id"]))
         {
             array_push($err, "id was not sent");
         }
+        elseif(!is_int($_POST["id"])){
+            array_push($err, "id is not intager");
+        }
 
-        if (!($_POST["isyes"] == "true" || $_POST["isyes"] == "false"))
+        if(!$_POST["isyes"]&&!isset($_POST["isyes"]))
         {
-            array_push($err, 'Not a valid "vote" variabe option');
+            array_push($err, "isyes was not sent.");
+        }
+        elseif (!is_bool($_POST["isyes"]))
+        {
+            array_push($err, 'isyes is not true or false');
         }
         
         if($err!=[])
         {
-            $this->sendResponse(400, [ "message"=>$err]);
+            $this->sendResponse(400, [ "message"=>implode(", ", $err)]);
         }
         
         $isYes=$_POST["isyes"];
@@ -37,7 +43,7 @@ class VoteController extends BaseController
         try {
             $imagesModel=  new imagesModel();
         } catch (Exception $e) {
-            array_push($err, $e->getMessage());
+            $this->sendResponse(500, ["message" => $e->getMessage()]);
         }
         try
         {
@@ -45,12 +51,7 @@ class VoteController extends BaseController
         }
         catch(Exception $e)
         {
-            array_push($err, $e->getMessage());
-        }
-
-        if($err!=[])
-        {
-            $this->sendResponse(500, [ "message"=>$err]);
+            $this->sendResponse(500, ["message" => $e->getMessage()]);
         }
 
         $this->sendResponse(200);
