@@ -1,5 +1,5 @@
 <?php 
-$dir=getenv("DOCUMENT_ROOT");
+$dir=getenv("ROOT_DIR");
 
 require_once  $dir."/model/images_model.php";
 require_once  $dir."/model/lod_model.php";

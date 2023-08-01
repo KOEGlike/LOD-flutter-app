@@ -1,5 +1,5 @@
 <?php
-$dir=getenv("DOCUMENT_ROOT");
+$dir=getenv("ROOT_DIR");
 
 // include the base controller file 
 require_once  $dir."/controller/api/base_controller.php";

@@ -1,5 +1,5 @@
 <?php 
-$dir=getenv("DOCUMENT_ROOT");
+$dir=getenv("ROOT_DIR");
 require_once  $dir."/model//database.php";
 
 class ImagesModel extends DataBase

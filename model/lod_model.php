@@ -1,5 +1,5 @@
 <?php 
-require_once  getenv("DOCUMENT_ROOT")."/model//database.php";
+require_once  getenv("ROOT_DIR")."/model//database.php";
 
 class LodModel extends DataBase
 {

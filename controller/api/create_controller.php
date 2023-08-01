@@ -1,5 +1,5 @@
 <?php 
-$dir=getenv("DOCUMENT_ROOT");
+$dir=getenv("ROOT_DIR");
 
 require_once $dir. "/model/images_model.php";
 require_once $dir."/model/lod_model.php";
@@ -12,7 +12,7 @@ class UploadController extends BaseController
 {
     public function createLOD()
     {
-        $dir=getenv("DOCUMENT_ROOT");
+        $dir=getenv("ROOT_DIR");
         if($_SERVER["REQUEST_METHOD"] !== "POST")
         {
             $this->methodNotSupported();
@@ -81,7 +81,7 @@ class UploadController extends BaseController
 
     public function  uploadImage()
     {
-        $dir=getenv("DOCUMENT_ROOT");
+        $dir=getenv("ROOT_DIR");
 
         if($_SERVER["REQUEST_METHOD"] !== "POST")
         {
