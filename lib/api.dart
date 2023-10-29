@@ -29,7 +29,7 @@ Future<Map<String, dynamic>?> get(int? id) async {
 }
 
 Future<void> vote(int id, bool isyes, List response) async {
-  Uri url = Uri.http('koeg.000webhostapp.com', 'lod/api/vote');
+  Uri url = Uri.https('koeg.000webhostapp.com', 'lod/api/vote');
   http.MultipartRequest request = http.MultipartRequest("POST", url);
   request.fields["isyes"] = isyes.toString();
   request.fields["id"] = id.toString();
@@ -59,7 +59,7 @@ Future<void> upload(
   int id,
   String name,
 ) async {
-  Uri url = Uri.http('koeg.000webhostapp.com', 'lod/api/upload/image');
+  Uri url = Uri.https('koeg.000webhostapp.com', 'lod/api/upload/image');
 
   for (int i = 0; i < images.length; i++) {
     http.MultipartRequest request = http.MultipartRequest("POST", url);
@@ -95,7 +95,7 @@ Future<void> upload(
 }
 
 Future<int> create(String name) async {
-  Uri url = Uri.http('koeg.000webhostapp.com', 'lod/api/upload/create');
+  Uri url = Uri.https('koeg.000webhostapp.com', 'lod/api/upload/create');
   http.MultipartRequest request = http.MultipartRequest("POST", url);
   request.fields["name"] = name;
   http.StreamedResponse streamedResponse = await request.send();
