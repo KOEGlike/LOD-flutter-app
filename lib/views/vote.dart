@@ -6,7 +6,7 @@ import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 
 class Vote extends StatefulWidget {
   final int? id;
-  const Vote({Key? key, required this.id}) : super(key: key);
+  const Vote({super.key, required this.id});
 
   @override
   State<Vote> createState() => _VoteState();

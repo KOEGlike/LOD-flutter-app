@@ -24,28 +24,31 @@ final _router = GoRouter(
         GoRoute(
           path: '/',
           parentNavigatorKey: _shellNavigatorKey,
-          builder: (context, state) {
-            return HomePage(
+          pageBuilder: (context, state) {
+            return NoTransitionPage(
+                child: HomePage(
               key: UniqueKey(),
-            );
+            ));
           },
         ),
         GoRoute(
           path: '/create',
           parentNavigatorKey: _shellNavigatorKey,
-          builder: (context, state) {
-            return CreatePage(
+          pageBuilder: (context, state) {
+            return NoTransitionPage(
+                child: CreatePage(
               key: UniqueKey(),
-            );
+            ));
           },
         ),
         GoRoute(
             parentNavigatorKey: _shellNavigatorKey,
             path: '/account',
-            builder: (context, state) {
-              return AccountPage(
+            pageBuilder: (context, state) {
+              return NoTransitionPage(
+                  child: AccountPage(
                 key: UniqueKey(),
-              );
+              ));
             }),
       ],
     ),

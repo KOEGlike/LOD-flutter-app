@@ -5,7 +5,7 @@ import '../custom_error.dart';
 
 class ResultsPage extends StatefulWidget {
   final int? id;
-  const ResultsPage({Key? key, required this.id}) : super(key: key);
+  const ResultsPage({super.key, required this.id});
 
   @override
   State<ResultsPage> createState() => _ResultsPageState();
@@ -96,12 +96,11 @@ class ImageResults extends StatefulWidget {
   final int votesAmount;
 
   const ImageResults(
-      {Key? key,
+      {super.key,
       required this.originId,
       required this.fileName,
       required this.score,
-      required this.votesAmount})
-      : super(key: key);
+      required this.votesAmount});
 
   @override
   State<ImageResults> createState() => _ImageResultsState();

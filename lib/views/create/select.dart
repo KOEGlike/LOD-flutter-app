@@ -86,8 +86,10 @@ class _CreatePageState extends State<CreatePage> {
                   hasError = true;
                   uploading == false;
                 });
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text(e.message)));
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text(e.message)));
+                }
                 //Scaffold.of(context).
               }
               try {

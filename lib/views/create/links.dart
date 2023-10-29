@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 class Links extends StatefulWidget {
   final int? id;
 
-  const Links({Key? key, required this.id}) : super(key: key);
+  const Links({super.key, required this.id});
 
   @override
   State<Links> createState() => _LinksState();
